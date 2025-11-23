@@ -24,15 +24,15 @@ public class BoardDto {
     private LocalDateTime modifiedAt;
 
     //기능
-//    public static BoardDto from(Board board) {
-//        return new BoardDto(
-//                board.getId(),
-//                board.getTitle(),
-//                board.getTeam(),
-//                board.getContent(),
-//                UserDto.from(board.getWriter()),
-//                board.getCreatedAt(),
-//                board.getModifiedAt()
-//        );
-//    }
+    public static BoardDto from(Board board) {
+        return new BoardDto(
+                board.getId(),
+                board.getTitle(),
+                board.getTeam(),
+                board.getContent(),
+                UserDto.from(board.getWriter()),
+                board.getCreatedAt(),
+                board.getModifiedAt()
+        );
+    }
 }
