@@ -1,0 +1,27 @@
+package com.okbo_projects.domain.user.model.response;
+
+import com.okbo_projects.common.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserCreateResponse {
+    Long id;
+    String nickname;
+    String email;
+    LocalDateTime createdAt;
+    LocalDateTime modifiedAt;
+
+    public UserCreateResponse(User user) {
+        this.id = user.getId();
+        this.nickname = user.getNickname();
+        this.email = user.getEmail();
+        this.createdAt = user.getCreatedAt();
+        this.modifiedAt = user.getModifiedAt();
+    }
+}
