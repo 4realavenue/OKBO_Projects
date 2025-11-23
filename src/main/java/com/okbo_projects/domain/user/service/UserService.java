@@ -18,6 +18,16 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserCreateResponse create(UserCreateRequest request) {
+        // 닉네임 중복 검증
+        if (userRepository.existsUserByNickname((request.getNickname()))) {
+            // 닉네임 중복 예외 처리 추후 수정 예정
+            throw new RuntimeException("이미 사용중인 닉네임입니다.");
+        }
+        // 이메일 중복 검증
+        if (userRepository.existsUserByEmail(request.getEmail())) {
+            // 이메일 중복 예외 처리 추후 수정 예정
+            throw new RuntimeException("해당 이메일로 가입한 계정이 존재합니다.");
+        }
         // 비밀번호 암호화
         String encodingPassword = passwordEncoder.encode(request.getPassword());
 
