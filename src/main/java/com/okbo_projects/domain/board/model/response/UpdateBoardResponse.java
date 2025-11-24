@@ -7,20 +7,20 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 public class UpdateBoardResponse {
-//    private Long id;
-//    private String title;
-//    private String content;
-//    private String team;
-//
-//    public static UpdateBoardResponse from(BoardDto dto) {
-//        return new UpdateBoardResponse(
-//                dto.getId(),
-//                dto.getTitle(),
-//                dto.getContent(),
-//                dto.getTeam()
-//        );
-//    }
+    private Long id;
+    private String title;
+    private String content;
+    private String team;
+
+    public static UpdateBoardResponse from(BoardDto dto) {
+        return new UpdateBoardResponse(
+                dto.getId(),
+                dto.getTitle(),
+                dto.getContent(),
+                dto.getTeam().getTeamName()
+        );
+    }
 
 }
