@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCreateResponse {
-    Long id;
-    String nickname;
-    String email;
-    String teamName;
+    private Long id;
+    private String nickname;
+    private String email;
+    private String teamName;
 
     public UserCreateResponse(User user) {
         this.id = user.getId();

@@ -13,15 +13,15 @@ public class UserCreateRequest {
 
     @NotBlank
     @Size(max = 10, message = "닉네임은 10글자를 넘길 수 없습니다.")
-    String nickname;
+    private String nickname;
 
     @Email(message = "올바른 이메일 형식이 아닙니다.")
-    String email;
+    private String email;
 
     @NotBlank
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[~!@#$%])(?=\\S+$).{8,15}$", message = "비밀번호는 영어와 숫자, 특수문자를 최소 1개 이상 포함해서 8~15자리 이내로 입력해주세요.")
-    String password;
+    private String password;
 
     @NotBlank
-    String favoriteTeam;
+    private String favoriteTeam;
 }

@@ -7,7 +7,9 @@ import com.okbo_projects.common.utils.PasswordEncoder;
 import com.okbo_projects.common.utils.Team;
 import com.okbo_projects.domain.user.model.request.LoginRequest;
 import com.okbo_projects.domain.user.model.request.UserCreateRequest;
+import com.okbo_projects.domain.user.model.request.UserNicknameUpdateRequest;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
+import com.okbo_projects.domain.user.model.response.UserNicknameUpdateResponse;
 import com.okbo_projects.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,5 +60,18 @@ public class UserService {
         }
 
         return new SessionUser(user.getId(), user.getEmail());
+    }
+
+    // 유저 닉네임 변경
+    public UserNicknameUpdateResponse updateNickname(UserNicknameUpdateRequest request, SessionUser sessionUser) {
+
+        if (userRepository.existsUserByNickname(request.getNickname())) {
+            throw new CustomException(CONFLICT_NICKNAME);
+        }
+        User user = userRepository.findUserById(sessionUser.getUserId());
+        user.updateNickname(request.getNickname());
+        userRepository.save(user);
+
+        return new UserNicknameUpdateResponse(user);
     }
 }

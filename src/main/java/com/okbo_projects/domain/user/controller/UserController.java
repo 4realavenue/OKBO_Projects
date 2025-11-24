@@ -3,17 +3,16 @@ package com.okbo_projects.domain.user.controller;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.user.model.request.LoginRequest;
 import com.okbo_projects.domain.user.model.request.UserCreateRequest;
+import com.okbo_projects.domain.user.model.request.UserNicknameUpdateRequest;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
+import com.okbo_projects.domain.user.model.response.UserNicknameUpdateResponse;
 import com.okbo_projects.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -39,5 +38,12 @@ public class UserController {
     public ResponseEntity<Void> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping("/nickname")
+    public ResponseEntity<UserNicknameUpdateResponse> updateNickname(@Valid @RequestBody UserNicknameUpdateRequest request,
+                                                                     @SessionAttribute(name = "loginUser") SessionUser sessionUser){
+        UserNicknameUpdateResponse response = userService.updateNickname(request, sessionUser);
+        return ResponseEntity.ok(response);
     }
 }
