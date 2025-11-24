@@ -48,4 +48,20 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
 
     Page<Board> findByTeam(Team team, Pageable pageable);
+
+    @Query("""
+        SELECT (
+            board.id,
+            board.title,
+            board.team,
+            board.writer
+        )
+        FROM Board board
+        WHERE board.writer IN (
+                SELECT follow.follower.id
+                  FROM Follow follow
+                 WHERE follow.following.id = :userId
+                )
+        """)
+    Page<Board> findByFollowerBoard(@Param("userId")Long userId, Pageable pageable);
 }

@@ -115,4 +115,14 @@ public class BoardController {
     ) {
         return ResponseEntity.ok(boardService.getBoardTeamAllPage(page, size, teamName));
     }
+
+    // 팔로워 게시글 조회
+    @GetMapping("/followers")
+    public ResponseEntity<Page<BoardReadFollowPageResponse>> getBoardFollowAllPage(
+            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(boardService.getBoardFollowAllPage(page, size, sessionUser.getUserId()));
+    }
 }

@@ -114,4 +114,11 @@ public class BoardService {
         return boardPage.map(i -> BaordReadTeamPageResponse.from(BoardDto.from(i)));
     }
 
+    // 팔로워 게시글 전체 조회
+    @Transactional(readOnly = true)
+    public Page<BoardReadFollowPageResponse> getBoardFollowAllPage(int page, int size, Long userId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Board> boardPage = boardRepository.findByFollowerBoard(userId, pageable);
+        return boardPage.map(i -> BoardReadFollowPageResponse.from(BoardDto.from(i)));
+    }
 }
