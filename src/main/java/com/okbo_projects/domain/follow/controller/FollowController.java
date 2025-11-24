@@ -1,6 +1,7 @@
 package com.okbo_projects.domain.follow.controller;
 
 import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.domain.follow.model.Response.FollowCountResponse;
 import com.okbo_projects.domain.follow.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,5 +30,14 @@ public class FollowController {
             @PathVariable String userNickname ) {
         followService.deleteFollow(sessionUser.getUserId(), userNickname);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // Following, Follower 수 count
+    @GetMapping("/follow-count")
+    public ResponseEntity<FollowCountResponse> countFollow(
+            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
+            @RequestParam(name = "userNickname", required = false) String userNickname) {
+        FollowCountResponse result = followService.countFollow(sessionUser.getUserId(), userNickname);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

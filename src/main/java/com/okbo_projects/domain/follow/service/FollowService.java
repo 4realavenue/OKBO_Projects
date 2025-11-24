@@ -4,6 +4,7 @@ import com.okbo_projects.common.entity.Follow;
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
 import com.okbo_projects.common.exception.ErrorMessage;
+import com.okbo_projects.domain.follow.model.Response.FollowCountResponse;
 import com.okbo_projects.domain.follow.repository.FollowRepository;
 import com.okbo_projects.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +45,21 @@ public class FollowService {
                 // TODO : 커스텀 예외로 변경
                 .orElseThrow(() -> new IllegalStateException("NOT_FOUND_FOLLOW"));
         followRepository.delete(follow);
+    }
+
+    // Following, Follow 수 count
+    public FollowCountResponse countFollow(Long userId, String userNickname) {
+        User user;
+        if (userNickname == null) {
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+        } else {
+            user = userRepository.findByNickname(userNickname)
+                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+        }
+
+        long following = followRepository.countByFollowing(user);
+        long follower = followRepository.countByFollower(user);
+        return new FollowCountResponse(following, follower);
     }
 }
