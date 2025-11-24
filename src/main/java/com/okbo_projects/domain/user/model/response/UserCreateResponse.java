@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,15 +13,11 @@ public class UserCreateResponse {
     String nickname;
     String email;
     String teamName;
-    LocalDateTime createdAt;
-    LocalDateTime modifiedAt;
 
     public UserCreateResponse(User user) {
         this.id = user.getId();
         this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.teamName = user.getTeam().getTeamName();
-        this.createdAt = user.getCreatedAt();
-        this.modifiedAt = user.getModifiedAt();
     }
 }

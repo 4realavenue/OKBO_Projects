@@ -1,8 +1,10 @@
 package com.okbo_projects.domain.user.service;
 
 import com.okbo_projects.common.entity.User;
+import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.common.utils.PasswordEncoder;
 import com.okbo_projects.common.utils.Team;
+import com.okbo_projects.domain.user.model.request.LoginRequest;
 import com.okbo_projects.domain.user.model.request.UserCreateRequest;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
 import com.okbo_projects.domain.user.repository.UserRepository;
@@ -44,5 +46,18 @@ public class UserService {
 
         return new UserCreateResponse(user);
 
+    }
+
+    public SessionUser login(LoginRequest request) {
+        // 예외 처리 추후 수정 예정
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("이메일이 일치하지 않습니다."));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            // 예외 처리 추후 수정 예정
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return new SessionUser(user.getId(), user.getEmail());
     }
 }

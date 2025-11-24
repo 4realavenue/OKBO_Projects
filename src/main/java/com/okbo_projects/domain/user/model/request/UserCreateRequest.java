@@ -18,10 +18,10 @@ public class UserCreateRequest {
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     String email;
 
-    // 소문자 포함 영문 + 숫자 + 특수문자를 최소 1글자씩 포함합니다.
     @NotBlank
     @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[~!@#$%])(?=\\S+$).{8,15}$", message = "비밀번호는 영어와 숫자, 특수문자를 최소 1개 이상 포함해서 8~15자리 이내로 입력해주세요.")
     String password;
 
+    @NotBlank
     String favoriteTeam;
 }
