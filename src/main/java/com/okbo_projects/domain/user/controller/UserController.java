@@ -10,10 +10,13 @@ import com.okbo_projects.domain.user.model.request.UserPasswordUpdateRequest;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
 import com.okbo_projects.domain.user.model.response.UserGetMyProfileResponse;
 import com.okbo_projects.domain.user.model.response.UserGetOtherProfileResponse;
+import com.okbo_projects.domain.user.model.response.UserGetMyProfileResponse;
+import com.okbo_projects.domain.user.model.response.UserGetOtherProfileResponse;
 import com.okbo_projects.domain.user.model.response.UserNicknameUpdateResponse;
 import com.okbo_projects.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,16 @@ public class UserController {
     public ResponseEntity<Void> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+   @GetMapping("/myPage")
+   public UserGetMyProfileResponse getMyProfile(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser) {
+        return userService.getMyProfile(sessionUser);
+    }
+
+    @GetMapping("/{nickname}")
+    public UserGetOtherProfileResponse getOtherProfile(@PathVariable String nickname) {
+        return userService.getOtherProfile(nickname);
     }
 
    @GetMapping("/myPage")
