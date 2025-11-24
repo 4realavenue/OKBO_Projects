@@ -1,11 +1,15 @@
 package com.okbo_projects.domain.user.controller;
 
+import com.okbo_projects.common.exception.CustomException;
+import com.okbo_projects.common.exception.ErrorMessage;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.user.model.request.LoginRequest;
 import com.okbo_projects.domain.user.model.request.UserCreateRequest;
 import com.okbo_projects.domain.user.model.request.UserNicknameUpdateRequest;
 import com.okbo_projects.domain.user.model.request.UserPasswordUpdateRequest;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
+import com.okbo_projects.domain.user.model.response.UserGetMyProfileResponse;
+import com.okbo_projects.domain.user.model.response.UserGetOtherProfileResponse;
 import com.okbo_projects.domain.user.model.response.UserNicknameUpdateResponse;
 import com.okbo_projects.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -39,6 +43,16 @@ public class UserController {
     public ResponseEntity<Void> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+   @GetMapping("/myPage")
+   public UserGetMyProfileResponse getMyProfile(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser) {
+        return userService.getMyProfile(sessionUser);
+    }
+
+    @GetMapping("/{nickname}")
+    public UserGetOtherProfileResponse getOtherProfile(@PathVariable String nickname) {
+        return userService.getOtherProfile(nickname);
     }
 
     @PutMapping("/nickname")
