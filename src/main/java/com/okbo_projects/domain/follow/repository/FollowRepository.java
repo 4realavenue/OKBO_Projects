@@ -23,4 +23,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     // user가 FromUser인 경우 조회(페이지네이션 적용)
     Page<Follow> findByFromUser(User user, Pageable pageable);
+
+    // user가 ToUser인 경우 조회(페이지네이션 적용)
+    Page<Follow> findByToUser(User user, Pageable pageable);
 }

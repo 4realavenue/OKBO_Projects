@@ -5,6 +5,7 @@ import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
 import com.okbo_projects.common.exception.ErrorMessage;
 import com.okbo_projects.domain.follow.model.Response.FollowCountResponse;
+import com.okbo_projects.domain.follow.model.Response.FollowGetFollowerListResponse;
 import com.okbo_projects.domain.follow.model.Response.FollowGetFollowingListResponse;
 import com.okbo_projects.domain.follow.repository.FollowRepository;
 import com.okbo_projects.domain.user.repository.UserRepository;
@@ -75,5 +76,14 @@ public class FollowService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return followRepository.findByFromUser(user, pageable)
                 .map(follow -> new FollowGetFollowingListResponse(follow.getToUser().getNickname()));
+    }
+
+    // Follower 유저 조회 (생성일 기준 내림차순 정렬)
+    public Page<FollowGetFollowerListResponse> getFollowerList(Long userId, int page, int size) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return followRepository.findByToUser(user, pageable)
+                .map(follow -> new FollowGetFollowerListResponse(follow.getFromUser().getNickname()));
     }
 }

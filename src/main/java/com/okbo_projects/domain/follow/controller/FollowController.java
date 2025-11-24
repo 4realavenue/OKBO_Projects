@@ -1,8 +1,7 @@
 package com.okbo_projects.domain.follow.controller;
 
 import com.okbo_projects.common.model.SessionUser;
-import com.okbo_projects.domain.follow.model.Response.FollowCountResponse;
-import com.okbo_projects.domain.follow.model.Response.FollowGetFollowingListResponse;
+import com.okbo_projects.domain.follow.model.Response.*;
 import com.okbo_projects.domain.follow.service.FollowService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,6 +50,16 @@ public class FollowController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size ) {
         Page<FollowGetFollowingListResponse> result = followService.getFollowingList(sessionUser.getUserId(), page, size);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    // Follower 유저 조회 (로그인된 유저 기준)
+    @GetMapping("/follower")
+    public ResponseEntity<Page<FollowGetFollowerListResponse>> getFollowerList(
+            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size ) {
+        Page<FollowGetFollowerListResponse> result = followService.getFollowerList(sessionUser.getUserId(), page, size);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
