@@ -22,11 +22,7 @@ public class Follow extends BaseEntity {
     @JoinColumn(name = "follower_id", nullable = false)
     private User follower;
 
-    /**
-     * Follow 관계 생성
-     * @param following 팔로우를 거는 사람(주체)
-     * @param follower 팔로우 할 대상
-     */
+    // Follow 생성 (following(주체), follower(대상))
     public Follow(User following, User follower) {
         this.following = following;
         this.follower = follower;
