@@ -105,4 +105,14 @@ public class BoardController {
     ) {
         return ResponseEntity.ok(boardService.getBoardAllPage(page, size));
     }
+
+    // 게시글 구단별 전체 조회
+    @GetMapping("/teams/{teamName}")
+    public ResponseEntity<Page<BaordReadTeamPageResponse>> getBoardTeamAllPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable String teamName
+    ) {
+        return ResponseEntity.ok(boardService.getBoardTeamAllPage(page, size, teamName));
+    }
 }

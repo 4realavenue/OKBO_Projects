@@ -104,4 +104,14 @@ public class BoardService {
         Page<Board> boardPage = boardRepository.findAll(pageable);
         return boardPage.map(i -> BoardReadAllPageResponse.from(BoardDto.from(i)));
     }
+
+    // 게시글 구단별 전체 조회
+    @Transactional(readOnly = true)
+    public Page<BaordReadTeamPageResponse> getBoardTeamAllPage(int page, int size, String teamName) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Team team = Team.valueOf(teamName);
+        Page<Board> boardPage = boardRepository.findByTeam(team, pageable);
+        return boardPage.map(i -> BaordReadTeamPageResponse.from(BoardDto.from(i)));
+    }
+
 }
