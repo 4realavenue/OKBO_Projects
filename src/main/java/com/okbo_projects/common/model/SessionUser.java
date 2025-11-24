@@ -7,9 +7,11 @@ public class SessionUser {
 
     private final Long userId;
     private final String userEmail;
+    private final String userNickname;
 
-    public SessionUser(Long userId, String userEmail) {
+    public SessionUser(Long userId, String userEmail, String userNickname) {
         this.userId = userId;
         this.userEmail = userEmail;
+        this.userNickname = userNickname;
     }
 }
