@@ -8,6 +8,7 @@ import com.okbo_projects.common.utils.Team;
 import com.okbo_projects.domain.user.model.request.LoginRequest;
 import com.okbo_projects.domain.user.model.request.UserCreateRequest;
 import com.okbo_projects.domain.user.model.request.UserNicknameUpdateRequest;
+import com.okbo_projects.domain.user.model.request.UserPasswordUpdateRequest;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
 import com.okbo_projects.domain.user.model.response.UserNicknameUpdateResponse;
 import com.okbo_projects.domain.user.repository.UserRepository;
@@ -73,5 +74,22 @@ public class UserService {
         userRepository.save(user);
 
         return new UserNicknameUpdateResponse(user);
+    }
+
+    public void updatePassword(UserPasswordUpdateRequest request, SessionUser sessionUser) {
+        User user = userRepository.findUserById(sessionUser.getUserId());
+
+        String currentPassword = request.getCurrentPassword();
+        String newPassword = request.getNewPassword();
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new CustomException(UNAUTHORIZED_PASSWORD);
+        }
+        if (currentPassword.equals(newPassword)) {
+            // 현재 비밀번호와 똑같은 걸로는 변경 불가 예외 추후 수정 예정
+            throw new RuntimeException("현재 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.");
+        }
+        String encodingPassword = passwordEncoder.encode(newPassword);
+        user.updatePassword(encodingPassword);
     }
 }

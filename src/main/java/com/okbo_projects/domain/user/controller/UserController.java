@@ -4,6 +4,7 @@ import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.user.model.request.LoginRequest;
 import com.okbo_projects.domain.user.model.request.UserCreateRequest;
 import com.okbo_projects.domain.user.model.request.UserNicknameUpdateRequest;
+import com.okbo_projects.domain.user.model.request.UserPasswordUpdateRequest;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
 import com.okbo_projects.domain.user.model.response.UserNicknameUpdateResponse;
 import com.okbo_projects.domain.user.service.UserService;
@@ -42,8 +43,15 @@ public class UserController {
 
     @PutMapping("/nickname")
     public ResponseEntity<UserNicknameUpdateResponse> updateNickname(@Valid @RequestBody UserNicknameUpdateRequest request,
-                                                                     @SessionAttribute(name = "loginUser") SessionUser sessionUser){
+                                                                     @SessionAttribute(name = "loginUser") SessionUser sessionUser) {
         UserNicknameUpdateResponse response = userService.updateNickname(request, sessionUser);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody UserPasswordUpdateRequest request,
+                                               @SessionAttribute(name = "loginUser") SessionUser sessionUser) {
+        userService.updatePassword(request, sessionUser);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
