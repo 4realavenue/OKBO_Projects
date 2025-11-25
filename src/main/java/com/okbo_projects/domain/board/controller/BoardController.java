@@ -1,5 +1,7 @@
 package com.okbo_projects.domain.board.controller;
 
+import com.okbo_projects.common.exception.CustomException;
+import com.okbo_projects.common.exception.ErrorMessage;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.board.model.request.CreateBoardRequest;
 import com.okbo_projects.domain.board.model.request.UpdateBoardRequest;
@@ -24,10 +26,12 @@ public class BoardController {
     @PostMapping("/create")
     public ResponseEntity<CreateBoardResponse> createBoard(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
-            Long writer,
             @RequestBody CreateBoardRequest request
     ){
-        CreateBoardResponse result = boardService.createBoard(sessionUser, writer, request);
+        if (sessionUser == null) {
+            throw new CustomException(ErrorMessage.UNAUTHORIZED_LOGIN_REQUIRED);
+        }
+        CreateBoardResponse result = boardService.createBoard(sessionUser, request);
         return ResponseEntity.ok(result);
 
     }
@@ -39,6 +43,9 @@ public class BoardController {
             @PathVariable Long id,
             @RequestBody UpdateBoardRequest request
     ){
+        if (sessionUser == null) {
+            throw new CustomException(ErrorMessage.UNAUTHORIZED_LOGIN_REQUIRED);
+        }
         UpdateBoardResponse result = boardService.updateBoard(sessionUser,id,request);
         return ResponseEntity.ok(result);
     }
@@ -57,6 +64,9 @@ public class BoardController {
     public ResponseEntity<List<ViewListOfMyArticlesWrittenResponse>> viewListOfMyArticlesWritten(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser
     ){
+        if (sessionUser == null) {
+            throw new CustomException(ErrorMessage.UNAUTHORIZED_LOGIN_REQUIRED);
+        }
         List<ViewListOfMyArticlesWrittenResponse> result = boardService.viewListOfMyArticlesWritten(sessionUser);
         return ResponseEntity.ok(result);
     }
@@ -98,6 +108,9 @@ public class BoardController {
     public ResponseEntity<Void> deleteBoard(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
             @PathVariable Long boardId) {
+        if (sessionUser == null) {
+            throw new CustomException(ErrorMessage.UNAUTHORIZED_LOGIN_REQUIRED);
+        }
         boardService.deleteBoard(sessionUser.getUserId(), boardId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
