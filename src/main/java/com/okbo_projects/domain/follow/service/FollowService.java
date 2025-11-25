@@ -30,11 +30,9 @@ public class FollowService {
         User toUser = userRepository.findByNickname(userNickname)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
 
-        // TODO : 커스텀 예외로 변경
-        if (fromUser.equals(toUser)) { throw new IllegalStateException("SAME_USERS"); }
+        if (fromUser.equals(toUser)) { throw new CustomException (BAD_REQUEST_NOT_ALLOWED_SELF_FOLLOW); }
         boolean checkFollowExistence = followRepository.existsByFromUserAndToUser(fromUser, toUser);
-        // TODO : 커스텀 예외로 변경
-        if (checkFollowExistence) { throw new IllegalStateException("EXIST_FOLLOW"); }
+        if (checkFollowExistence) { throw new CustomException(CONFLICT_ALREADY_FOLLOWING); }
 
         Follow follow = new Follow(fromUser, toUser);
         followRepository.save(follow);
@@ -46,9 +44,11 @@ public class FollowService {
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         User toUser = userRepository.findByNickname(userNickname)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+
+        if (fromUser.equals(toUser)) { throw new CustomException (BAD_REQUEST_NOT_ALLOWED_SELF_FOLLOW); }
         Follow follow = followRepository.findByFromUserAndToUser(fromUser, toUser)
-                // TODO : 커스텀 예외로 변경
-                .orElseThrow(() -> new IllegalStateException("NOT_FOUND_FOLLOW"));
+                .orElseThrow(() -> new CustomException(BAD_REQUEST_NOT_FOLLOWING_UNFOLLOW));
+
         followRepository.delete(follow);
     }
 
