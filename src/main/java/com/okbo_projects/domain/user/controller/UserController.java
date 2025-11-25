@@ -2,10 +2,7 @@ package com.okbo_projects.domain.user.controller;
 
 
 import com.okbo_projects.common.model.SessionUser;
-import com.okbo_projects.domain.user.model.request.LoginRequest;
-import com.okbo_projects.domain.user.model.request.UserCreateRequest;
-import com.okbo_projects.domain.user.model.request.UserNicknameUpdateRequest;
-import com.okbo_projects.domain.user.model.request.UserPasswordUpdateRequest;
+import com.okbo_projects.domain.user.model.request.*;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
 import com.okbo_projects.domain.user.model.response.UserGetMyProfileResponse;
 import com.okbo_projects.domain.user.model.response.UserGetOtherProfileResponse;
@@ -72,5 +69,14 @@ public class UserController {
                                                @SessionAttribute(name = "loginUser") SessionUser sessionUser) {
         userService.updatePassword(request, sessionUser);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@Valid @RequestBody UserDeleteRequest request,
+                                       @SessionAttribute(name = "loginUser") SessionUser sessionUser,
+                                       HttpSession session) {
+        userService.delete(request, sessionUser);
+        session.invalidate();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
