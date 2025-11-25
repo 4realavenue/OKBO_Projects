@@ -20,9 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.okbo_projects.common.exception.ErrorMessage.*;
 
 @RequiredArgsConstructor
@@ -69,7 +66,6 @@ public class BoardService {
     @Transactional(readOnly = true)
     public Page<ViewListOfMyArticlesWrittenResponse> viewListOfMyArticlesWritten(SessionUser sessionUser,int page, int size) {
         User user = findByUserId(sessionUser.getUserId());
-        Page<Board> boards = boardRepository.findByWriter(user, PageRequest.of(page, size));
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Board> boardPage = boardRepository.findByWriter(user, pageable);
         return boardPage.map(ViewListOfMyArticlesWrittenResponse::from);
