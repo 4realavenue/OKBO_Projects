@@ -34,14 +34,12 @@ public class BoardService {
     private final UserRepository userRepository;
 
     //게시글 생성
-    public CreateBoardResponse createBoard(SessionUser sessionUser,Long writer, CreateBoardRequest request) {
+    public CreateBoardResponse createBoard(SessionUser sessionUser, CreateBoardRequest request) {
         //1.유저의 아이디를 검색하여 없으면 예외처리
-        User user = userRepository.findById(writer).orElseThrow(
+        User user = userRepository.findById(sessionUser.getUserId()).orElseThrow(
                 () -> new CustomException(NOT_FOUND_USER));
 
-        if(!sessionUser.getId().equals(user.getId())) {
-            throw new CustomException(NOT_FOUND_USER);
-        }
+
         Team team = Team.valueOf((request.getTeam()));
 
         //2.게시글 생성
@@ -59,13 +57,13 @@ public class BoardService {
     }
 
     //게시글 수정
-    public UpdateBoardResponse updateBoard(SessionUser sessionUser,Long writer, UpdateBoardRequest request) {
+    public UpdateBoardResponse updateBoard(SessionUser sessionUser,Long id, UpdateBoardRequest request) {
         //1.게시글의 아이디를 검색하여 없으면 예외처리
-        Board board = boardRepository.findById(writer).orElseThrow(
+        Board board = boardRepository.findById(id).orElseThrow(
                 () -> new CustomException(NOT_FOUND_BOARD));
 
         if(!sessionUser.getId().equals(board.getWriter().getId())) {
-            throw new CustomException(NOT_FOUND_USER);
+            throw new CustomException(ErrorMessage.FORBIDDEN_ONLY_WRITER);
         }
         //2.게시글 수정
         board.update(request);

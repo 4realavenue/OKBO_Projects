@@ -38,5 +38,7 @@ public class Board extends BaseEntity {
     }
 
     public void update(UpdateBoardRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
     }
 }
