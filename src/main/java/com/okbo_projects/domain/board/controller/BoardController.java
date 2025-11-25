@@ -82,16 +82,16 @@ public class BoardController {
         return ResponseEntity.ok(result);
     }
 
-//    // 팔로워 게시글 조회
-//    @GetMapping("/followers")
-//    public ResponseEntity<Page<BoardReadFollowPageResponse>> getBoardFollowAllPage(
-//            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size
-//    ) {
-//        Page<BoardReadFollowPageResponse> result = boardService.getBoardFollowAllPage(page, size, sessionUser.getUserId());
-//        return ResponseEntity.ok(result);
-//    }
+    // 팔로워 게시글 조회
+    @GetMapping("/followers")
+    public ResponseEntity<Page<BoardReadFollowPageResponse>> getBoardFollowAllPage(
+            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<BoardReadFollowPageResponse> result = boardService.getBoardFollowAllPage(page, size, sessionUser.getUserId());
+        return ResponseEntity.ok(result);
+    }
 
     // 게시글 삭제
     @DeleteMapping("/{boardId}")

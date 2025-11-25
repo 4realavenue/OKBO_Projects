@@ -23,8 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.okbo_projects.common.exception.ErrorMessage.NOT_FOUND_BOARD;
-import static com.okbo_projects.common.exception.ErrorMessage.NOT_FOUND_USER;
+import static com.okbo_projects.common.exception.ErrorMessage.*;
 
 @RequiredArgsConstructor
 @Transactional
@@ -117,13 +116,13 @@ public class BoardService {
         return boardPage.map(i -> BaordReadTeamPageResponse.from(BoardDto.from(i)));
     }
 
-//    // 팔로워 게시글 전체 조회
-//    @Transactional(readOnly = true)
-//    public Page<BoardReadFollowPageResponse> getBoardFollowAllPage(int page, int size, Long userId) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-//        Page<Board> boardPage = boardRepository.findByFollowerBoard(userId, pageable);
-//        return boardPage.map(i -> BoardReadFollowPageResponse.from(BoardDto.from(i)));
-//    }
+    // 팔로워 게시글 전체 조회
+    @Transactional(readOnly = true)
+    public Page<BoardReadFollowPageResponse> getBoardFollowAllPage(int page, int size, Long userId) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Board> boardPage = boardRepository.findByFollowerBoard(userId, pageable);
+        return boardPage.map(i -> BoardReadFollowPageResponse.from(BoardDto.from(i)));
+    }
 
     // 게시글 삭제
     public void deleteBoard(Long userId, Long boardId) {
