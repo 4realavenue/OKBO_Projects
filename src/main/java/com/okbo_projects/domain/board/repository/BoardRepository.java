@@ -13,9 +13,7 @@ import java.util.List;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-
     List<Board> findByWriter(User user);
-
 
     Page<Board> findByTeam(Team team, Pageable pageable);
 
