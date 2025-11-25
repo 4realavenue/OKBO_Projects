@@ -55,6 +55,9 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CustomException(NOT_FOUND_EMAIL));
 
+        if (!user.isActivated()) {
+            throw new CustomException(NOT_FOUND_USER);
+        }
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException(UNAUTHORIZED_WRONG_PASSWORD);
         }
@@ -76,6 +79,10 @@ public class UserService {
     public UserGetOtherProfileResponse getOtherProfile(String userNickname) {
         User user = userRepository.findByNickname(userNickname)
                 .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
+
+        if (!user.isActivated()) {
+            throw new CustomException(NOT_FOUND_USER);
+        }
 
         return new UserGetOtherProfileResponse(user);
     }
