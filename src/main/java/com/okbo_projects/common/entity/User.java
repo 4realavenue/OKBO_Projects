@@ -45,4 +45,8 @@ public class User extends BaseEntity {
     public void updatePassword(String updatePassword) {
         this.password = updatePassword;
     }
+
+    public void deactivate() {
+        this.activated = false;
+    }
 }

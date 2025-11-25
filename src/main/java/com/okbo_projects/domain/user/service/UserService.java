@@ -5,10 +5,7 @@ import com.okbo_projects.common.exception.CustomException;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.common.utils.PasswordEncoder;
 import com.okbo_projects.common.utils.Team;
-import com.okbo_projects.domain.user.model.request.LoginRequest;
-import com.okbo_projects.domain.user.model.request.UserCreateRequest;
-import com.okbo_projects.domain.user.model.request.UserNicknameUpdateRequest;
-import com.okbo_projects.domain.user.model.request.UserPasswordUpdateRequest;
+import com.okbo_projects.domain.user.model.request.*;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
 import com.okbo_projects.domain.user.model.response.UserGetMyProfileResponse;
 import com.okbo_projects.domain.user.model.response.UserGetOtherProfileResponse;
@@ -114,5 +111,17 @@ public class UserService {
 
         String encodingPassword = passwordEncoder.encode(newPassword);
         user.updatePassword(encodingPassword);
+    }
+
+    // 유저 삭제
+    public void delete(UserDeleteRequest request, SessionUser sessionUser) {
+        User user = userRepository.findUserById(sessionUser.getUserId());
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new CustomException(UNAUTHORIZED_PASSWORD);
+        }
+
+        user.deactivate();
+        userRepository.save(user);
     }
 }
