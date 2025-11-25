@@ -39,4 +39,10 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     // User가 ToUser인 경우 존재 여부 확인(존재 시 true 반환)
     boolean existsByToUser(User user);
+
+    // 회원탈퇴 시 모든 toUser 삭제
+    void deleteAllByFromUser(User fromUser);
+
+    // 회원 탈퇴 시 모든 fromUser 삭제
+    void deleteAllByToUser(User toUser);
 }

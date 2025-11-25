@@ -5,6 +5,7 @@ import com.okbo_projects.common.exception.CustomException;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.common.utils.PasswordEncoder;
 import com.okbo_projects.common.utils.Team;
+import com.okbo_projects.domain.follow.repository.FollowRepository;
 import com.okbo_projects.domain.user.model.request.*;
 import com.okbo_projects.domain.user.model.response.UserCreateResponse;
 import com.okbo_projects.domain.user.model.response.UserGetMyProfileResponse;
@@ -22,8 +23,9 @@ import static com.okbo_projects.common.exception.ErrorMessage.*;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final FollowRepository followRepository;
 
     // 회원가입
     public UserCreateResponse create(UserCreateRequest request) {
@@ -84,7 +86,7 @@ public class UserService {
         return new UserGetOtherProfileResponse(user);
     }
 
-    // 유저 닉네임 변경
+    // 유저 닉네임 변경(중복 불가)
     public UserNicknameUpdateResponse updateNickname(UserNicknameUpdateRequest request, SessionUser sessionUser) {
 
         if (userRepository.existsUserByNickname(request.getNickname())) {
@@ -98,7 +100,7 @@ public class UserService {
         return new UserNicknameUpdateResponse(user);
     }
 
-    // 유저 비밀번호 변경
+    // 유저 비밀번호 변경(현재 비밀번호 검증 및 새 비밀번호는 현재 비밀번호와 일치 불가)
     public void updatePassword(UserPasswordUpdateRequest request, SessionUser sessionUser) {
         User user = userRepository.findUserById(sessionUser.getUserId());
 
@@ -117,13 +119,16 @@ public class UserService {
         user.updatePassword(encodingPassword);
     }
 
-    // 유저 삭제
+    // 유저 삭제(회원 탈퇴, 팔로워&팔로잉 목록 삭제)
     public void delete(UserDeleteRequest request, SessionUser sessionUser) {
         User user = userRepository.findUserById(sessionUser.getUserId());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException(UNAUTHORIZED_WRONG_PASSWORD);
         }
+
+        followRepository.deleteAllByFromUser(user);
+        followRepository.deleteAllByToUser(user);
 
         user.deactivate();
         userRepository.save(user);

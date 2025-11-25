@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
+    // 유저 생성 (회원가입)
     @PostMapping
     public ResponseEntity<UserCreateResponse> create(@Valid @RequestBody UserCreateRequest request) {
         UserCreateResponse response = userService.create(request);
