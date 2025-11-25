@@ -76,8 +76,7 @@ public class FollowService {
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return followRepository.findByFromUser(user, pageable)
-                .map(follow -> new FollowGetFollowingListResponse(follow.getToUser().getNickname()));
+        return followRepository.findByFromUser(user.getId(), pageable);
     }
 
     // Follower 유저 리스트 조회 (생성일 기준 내림차순 정렬)
@@ -95,7 +94,6 @@ public class FollowService {
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return followRepository.findByToUser(user, pageable)
-                .map(follow -> new FollowGetFollowerListResponse(follow.getFromUser().getNickname()));
+        return followRepository.findByToUser(user.getId(), pageable);
     }
 }

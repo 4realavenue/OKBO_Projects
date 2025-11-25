@@ -3,6 +3,8 @@ package com.okbo_projects.domain.follow.repository;
 import com.okbo_projects.common.entity.Follow;
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
+import com.okbo_projects.domain.follow.model.Response.FollowGetFollowerListResponse;
+import com.okbo_projects.domain.follow.model.Response.FollowGetFollowingListResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,10 +47,24 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     long countByToUser(@Param("userId") Long userId);
 
     // user가 FromUser인 경우 조회(페이지네이션 적용)
-    Page<Follow> findByFromUser(User user, Pageable pageable);
+    @Query(
+            """
+                select f.toUser.nickname
+                from Follow f left join User u on f.toUser.id = u.id
+                where f.fromUser.id = :userId and u.activated = true
+            """
+    )
+    Page<FollowGetFollowingListResponse> findByFromUser(@Param("userId") Long userId, Pageable pageable);
 
     // user가 ToUser인 경우 조회(페이지네이션 적용)
-    Page<Follow> findByToUser(User user, Pageable pageable);
+    @Query(
+            """
+                select f.fromUser.nickname
+                from Follow f left join User u on f.fromUser.id = u.id
+                where f.toUser.id = :userId and u.activated = true
+            """
+    )
+    Page<FollowGetFollowerListResponse> findByToUser(@Param("userId") Long userId, Pageable pageable);
 
     // User가 FromUser인 경우 존재 여부 확인(존재 시 true 반환)
     boolean existsByFromUser(User user);
