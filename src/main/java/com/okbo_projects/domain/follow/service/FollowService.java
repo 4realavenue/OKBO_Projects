@@ -25,7 +25,7 @@ public class FollowService {
 
     // Follow 관계 create (fromUser: 로그인한 유저 / toUser: Path Variable로 입력받은 유저)
     public void createFollow(Long userId, String userNickname) {
-        User fromUser = userRepository.findUserByNickname(userNickname);
+        User fromUser = userRepository.findUserById(userId);
         User toUser = userRepository.findUserByNickname(userNickname);
 
         if (fromUser.equals(toUser)) { throw new CustomException (BAD_REQUEST_NOT_ALLOWED_SELF_FOLLOW); }
