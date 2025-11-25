@@ -3,7 +3,6 @@ package com.okbo_projects.domain.follow.service;
 import com.okbo_projects.common.entity.Follow;
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
-import com.okbo_projects.common.exception.ErrorMessage;
 import com.okbo_projects.domain.follow.model.Response.*;
 import com.okbo_projects.domain.follow.repository.FollowRepository;
 import com.okbo_projects.domain.user.repository.UserRepository;
@@ -15,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.okbo_projects.common.exception.ErrorMessage.*;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -25,9 +26,9 @@ public class FollowService {
     // Follow 관계 create (fromUser: 로그인한 유저 / toUser: Path Variable로 입력받은 유저)
     public void createFollow(Long userId, String userNickname) {
         User fromUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         User toUser = userRepository.findByNickname(userNickname)
-                .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
 
         // TODO : 커스텀 예외로 변경
         if (fromUser.equals(toUser)) { throw new IllegalStateException("SAME_USERS"); }
@@ -42,9 +43,9 @@ public class FollowService {
     // Follow 관계 delete (fromUser: 로그인한 유저 / toUser: Path Variable로 입력받은 유저)
     public void deleteFollow(Long userId, String userNickname) {
         User fromUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         User toUser = userRepository.findByNickname(userNickname)
-                .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         Follow follow = followRepository.findByFromUserAndToUser(fromUser, toUser)
                 // TODO : 커스텀 예외로 변경
                 .orElseThrow(() -> new IllegalStateException("NOT_FOUND_FOLLOW"));
@@ -56,10 +57,10 @@ public class FollowService {
         User user;
         if (userNickname == null) {
             user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         } else {
             user = userRepository.findByNickname(userNickname)
-                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         }
 
         long following = followRepository.countByFromUser(user);
@@ -72,10 +73,10 @@ public class FollowService {
         User user;
         if (userNickname == null) {
             user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         } else {
             user = userRepository.findByNickname(userNickname)
-                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
@@ -88,10 +89,10 @@ public class FollowService {
         User user;
         if (userNickname == null) {
             user = userRepository.findById(userId)
-                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         } else {
             user = userRepository.findByNickname(userNickname)
-                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_USER));
+                    .orElseThrow(() -> new CustomException(NOT_FOUND_USER));
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
