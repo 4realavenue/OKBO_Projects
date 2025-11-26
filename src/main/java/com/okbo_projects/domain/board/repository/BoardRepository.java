@@ -9,6 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDate;
+
 import static com.okbo_projects.common.exception.ErrorMessage.NOT_FOUND_BOARD;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
@@ -38,6 +41,33 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
         """
     )
     Page<Board> findByFollowerBoard(@Param("userId") Long userId, Pageable pageable);
+
+
+    @Query(
+            value = """
+    SELECT board
+    FROM Board board
+    WHERE (:title IS NULL OR :title = '' OR board.title LIKE %:title%)
+    AND (:writer IS NULL OR :writer = '' OR board.writer.nickname LIKE CONCAT('%', :writer, '%'))
+    AND (:startDate IS NULL OR board.createdAt >= :startDate)
+    AND (:endDate IS NULL OR board.createdAt <= :endDate)
+    """,
+            countQuery = """
+SELECT COUNT(board)
+FROM Board board
+WHERE (:title IS NULL OR :title = '' OR board.title LIKE %:title%)
+    AND (:writer IS NULL OR :writer = '' OR board.writer.nickname LIKE CONCAT('%', :writer, '%'))
+    AND (:startDate IS NULL OR board.createdAt >= :startDate)
+    AND (:endDate IS NULL OR board.createdAt <= :endDate)
+"""
+    )
+    Page<Board> searchAllBoards(
+            @Param("title") String title,
+            @Param("writer") String writer,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            Pageable pageable
+    );
 
     default Board findBoardById(Long boardId) {
         return findById(boardId).orElseThrow(() -> new CustomException(NOT_FOUND_BOARD));

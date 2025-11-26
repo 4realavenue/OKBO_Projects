@@ -20,6 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static com.okbo_projects.common.exception.ErrorMessage.*;
 
 @RequiredArgsConstructor
@@ -75,8 +78,24 @@ public class BoardService {
 
     // 게시글 전체 조회
     @Transactional(readOnly = true)
-    public Page<BoardGetAllPageResponse> getBoardAllPage(Pageable pageable) {
-        Page<Board> boardPage = boardRepository.findAll(pageable);
+    public Page<BoardGetAllPageResponse> getBoardAllPage(
+            String title,
+            String writer,
+            LocalDate startDate,
+            LocalDate endDate,
+            Pageable pageable
+    ) {
+        boolean searchCondition = (title != null && !title.isBlank()) ||
+                        (writer != null && !writer.isBlank()) ||
+                        (startDate != null) ||
+                        (endDate != null);
+
+        Page<Board> boardPage;
+        if (searchCondition){
+            boardPage = boardRepository.searchAllBoards(title, writer, startDate, endDate, pageable);
+        } else {
+            boardPage = boardRepository.findAll(pageable);
+        }
         return boardPage.map(board -> BoardGetAllPageResponse.from(BoardDto.from(board)));
     }
 
