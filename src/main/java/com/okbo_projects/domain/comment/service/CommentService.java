@@ -6,9 +6,14 @@ import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.board.repository.BoardRepository;
+import com.okbo_projects.domain.comment.model.request.CommentUpdateRequest;
+import com.okbo_projects.domain.comment.model.response.CommentUpdateResponse;
 import com.okbo_projects.domain.comment.model.dto.CommentDto;
 import com.okbo_projects.domain.comment.model.request.CommentCreateRequest;
 import com.okbo_projects.domain.comment.model.response.CommentCreateResponse;
+import com.okbo_projects.domain.comment.model.dto.CommentDto;
+import com.okbo_projects.domain.comment.model.request.CommentUpdateRequest;
+import com.okbo_projects.domain.comment.model.response.CommentUpdateResponse;
 import com.okbo_projects.domain.comment.repository.CommentRepository;
 import com.okbo_projects.domain.user.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -16,7 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.okbo_projects.common.exception.ErrorMessage.*;
+import static com.okbo_projects.common.exception.ErrorMessage.FORBIDDEN_ONLY_WRITER;
+
+import static com.okbo_projects.common.exception.ErrorMessage.FORBIDDEN_ONLY_WRITER;
 
 @Service
 @Transactional
@@ -25,7 +32,6 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
-
     // 댓글 생성
     public CommentCreateResponse createComment(Long boardId, SessionUser sessionUser, CommentCreateRequest request) {
         Board board = findByBoardId(boardId);
@@ -40,59 +46,30 @@ public class CommentService {
         return CommentCreateResponse.from(commentDto);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 회원 확인
-    private User findByUserId(Long userId) {
-        return userRepository.findUserById(userId);
-    }
-
-    // 게시물 확인
-    private Board findByBoardId(Long boardId) {
-        return boardRepository.findBoardById(boardId);
-    }
-
-    // 작성자 일치 확인
-    private void matchedWriter(Long userId, Long boardUserId) {
-        if(!userId.equals(boardUserId)) {
+    //댓글 수정
+    public CommentUpdateResponse updateComment(SessionUser sessionUser, Long commentId, CommentUpdateRequest request) {
+        Comment comment = findByCommentId(commentId);
+        Long userId = sessionUser.getUserId();
+        if (!comment.getWriter().getId().equals(userId)) {
             throw new CustomException(FORBIDDEN_ONLY_WRITER);
         }
+        comment.update(request);
+        commentRepository.save(comment);
+        return CommentUpdateResponse.from(comment.toDto());
     }
+
+    //댓글 삭제
+    public void deleteComment(SessionUser sessionUser, Long commentId) {
+        Comment comment = findByCommentId(commentId);
+        Long userId = sessionUser.getUserId();
+        if (!comment.getWriter().getId().equals(userId)) {
+            throw new CustomException(FORBIDDEN_ONLY_WRITER);
+        }
+        commentRepository.delete(comment);
+    }
+
+    private Comment findByCommentId(Long commentId) {
+        return commentRepository.findCommentById(commentId);
+    }
+
 }
