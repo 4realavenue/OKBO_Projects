@@ -60,6 +60,7 @@ public class BoardService {
     }
 
     //게시글 상세조회
+    // TODO : 좋아요 수, 해당 게시글의 댓글 반환 추가
     @Transactional(readOnly = true)
     public BoardDto detailedInquiryBoard(Long boardId) {
         Board board = findByBoardId(boardId);
