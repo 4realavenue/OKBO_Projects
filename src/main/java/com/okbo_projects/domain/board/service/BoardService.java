@@ -64,25 +64,22 @@ public class BoardService {
 
     //내가 작성한 게시글 목록 조회
     @Transactional(readOnly = true)
-    public Page<ViewListOfMyArticlesWrittenResponse> viewListOfMyArticlesWritten(SessionUser sessionUser,int page, int size) {
+    public Page<ViewListOfMyArticlesWrittenResponse> viewListOfMyArticlesWritten(SessionUser sessionUser, Pageable pageable) {
         User user = findByUserId(sessionUser.getUserId());
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Board> boardPage = boardRepository.findByWriter(user, pageable);
         return boardPage.map(ViewListOfMyArticlesWrittenResponse::from);
     }
 
     // 게시글 전체 조회
     @Transactional(readOnly = true)
-    public Page<BoardReadAllPageResponse> getBoardAllPage(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public Page<BoardReadAllPageResponse> getBoardAllPage(Pageable pageable) {
         Page<Board> boardPage = boardRepository.findAll(pageable);
         return boardPage.map(i -> BoardReadAllPageResponse.from(BoardDto.from(i)));
     }
 
     // 게시글 구단별 전체 조회
     @Transactional(readOnly = true)
-    public Page<BaordReadTeamPageResponse> getBoardTeamAllPage(int page, int size, String teamName) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public Page<BaordReadTeamPageResponse> getBoardTeamAllPage(Pageable pageable, String teamName) {
         Team team = Team.valueOf(teamName);
         Page<Board> boardPage = boardRepository.findByTeam(team, pageable);
         return boardPage.map(i -> BaordReadTeamPageResponse.from(BoardDto.from(i)));
@@ -90,10 +87,9 @@ public class BoardService {
 
     // 팔로워 게시글 전체 조회
     @Transactional(readOnly = true)
-    public Page<BoardReadFollowPageResponse> getBoardFollowAllPage(int page, int size, SessionUser sessionUser) {
+    public Page<BoardReadFollowPageResponse> getBoardFollowAllPage(SessionUser sessionUser, Pageable pageable) {
         User user = findByUserId(sessionUser.getUserId());
         findByFromUser(user);
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Board> boardPage = boardRepository.findByFollowerBoard(user.getId(), pageable);
         return boardPage.map(i -> BoardReadFollowPageResponse.from(BoardDto.from(i)));
     }
