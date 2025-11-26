@@ -10,18 +10,20 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaordReadTeamPageResponse {
+public class BoardGetAllPageResponse {
     private Long id;
     private String title;
+    private String team;
     private String writer;
      private Long likes;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
-    public static BaordReadTeamPageResponse from(BoardDto boardDto) {
-        return new BaordReadTeamPageResponse(
+    public static BoardGetAllPageResponse from(BoardDto boardDto) {
+        return new BoardGetAllPageResponse(
                 boardDto.getId(),
                 boardDto.getTitle(),
+                boardDto.getTeam().getTeamName(),
                 boardDto.getWriter(),
                 5L, //TODO : likes 구현 후, 게시글별 좋아요 수 가져오도록 수정
                 boardDto.getCreatedAt(),

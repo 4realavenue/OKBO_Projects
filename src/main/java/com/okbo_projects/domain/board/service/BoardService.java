@@ -6,8 +6,8 @@ import com.okbo_projects.common.exception.CustomException;
 import com.okbo_projects.common.utils.Team;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.board.model.dto.BoardDto;
-import com.okbo_projects.domain.board.model.request.CreateBoardRequest;
-import com.okbo_projects.domain.board.model.request.UpdateBoardRequest;
+import com.okbo_projects.domain.board.model.request.BoardCreateRequest;
+import com.okbo_projects.domain.board.model.request.BoardUpdateRequest;
 import com.okbo_projects.domain.board.model.response.*;
 import com.okbo_projects.domain.board.repository.BoardRepository;
 import com.okbo_projects.domain.follow.repository.FollowRepository;
@@ -31,7 +31,7 @@ public class BoardService {
     private final FollowRepository followRepository;
 
     //게시글 생성
-    public CreateBoardResponse createBoard(SessionUser sessionUser, CreateBoardRequest request) {
+    public BoardCreateResponse createBoard(SessionUser sessionUser, BoardCreateRequest request) {
         User user = findByUserId(sessionUser.getUserId());
         Team team = Team.valueOf((request.getTeam()));
         Board board = new Board(
@@ -42,17 +42,17 @@ public class BoardService {
         );
         boardRepository.save(board);
         BoardDto dto = BoardDto.from(board);
-        return CreateBoardResponse.from(dto);
+        return BoardCreateResponse.from(dto);
     }
 
     //게시글 수정
-    public UpdateBoardResponse updateBoard(SessionUser sessionUser, Long boardId, UpdateBoardRequest request) {
+    public BoardUpdateResponse updateBoard(SessionUser sessionUser, Long boardId, BoardUpdateRequest request) {
         Board board = findByBoardId(boardId);
         matchedWriter(sessionUser.getUserId(), board.getWriter().getId());
         board.update(request);
         boardRepository.save(board);
         BoardDto dto = BoardDto.from(board);
-        return UpdateBoardResponse.from(dto);
+        return BoardUpdateResponse.from(dto);
     }
 
     //게시글 상세조회
@@ -64,34 +64,34 @@ public class BoardService {
 
     //내가 작성한 게시글 목록 조회
     @Transactional(readOnly = true)
-    public Page<ViewListOfMyArticlesWrittenResponse> viewListOfMyArticlesWritten(SessionUser sessionUser, Pageable pageable) {
+    public Page<BoardGetMyArticlesResponse> viewListOfMyArticlesWritten(SessionUser sessionUser, Pageable pageable) {
         User user = findByUserId(sessionUser.getUserId());
         Page<Board> boardPage = boardRepository.findByWriter(user, pageable);
-        return boardPage.map(ViewListOfMyArticlesWrittenResponse::from);
+        return boardPage.map(BoardGetMyArticlesResponse::from);
     }
 
     // 게시글 전체 조회
     @Transactional(readOnly = true)
-    public Page<BoardReadAllPageResponse> getBoardAllPage(Pageable pageable) {
+    public Page<BoardGetAllPageResponse> getBoardAllPage(Pageable pageable) {
         Page<Board> boardPage = boardRepository.findAll(pageable);
-        return boardPage.map(i -> BoardReadAllPageResponse.from(BoardDto.from(i)));
+        return boardPage.map(i -> BoardGetAllPageResponse.from(BoardDto.from(i)));
     }
 
     // 게시글 구단별 전체 조회
     @Transactional(readOnly = true)
-    public Page<BaordReadTeamPageResponse> getBoardTeamAllPage(Pageable pageable, String teamName) {
+    public Page<BoardGetTeamPageResponse> getBoardTeamAllPage(Pageable pageable, String teamName) {
         Team team = Team.valueOf(teamName);
         Page<Board> boardPage = boardRepository.findByTeam(team, pageable);
-        return boardPage.map(i -> BaordReadTeamPageResponse.from(BoardDto.from(i)));
+        return boardPage.map(i -> BoardGetTeamPageResponse.from(BoardDto.from(i)));
     }
 
     // 팔로워 게시글 전체 조회
     @Transactional(readOnly = true)
-    public Page<BoardReadFollowPageResponse> getBoardFollowAllPage(SessionUser sessionUser, Pageable pageable) {
+    public Page<BoardGetFollowPageResponse> getBoardFollowAllPage(SessionUser sessionUser, Pageable pageable) {
         User user = findByUserId(sessionUser.getUserId());
         findByFromUser(user);
         Page<Board> boardPage = boardRepository.findByFollowerBoard(user.getId(), pageable);
-        return boardPage.map(i -> BoardReadFollowPageResponse.from(BoardDto.from(i)));
+        return boardPage.map(i -> BoardGetFollowPageResponse.from(BoardDto.from(i)));
     }
 
     // 팔로워 확인
