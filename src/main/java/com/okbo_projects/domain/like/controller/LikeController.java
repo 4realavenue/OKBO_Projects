@@ -38,7 +38,15 @@ public class LikeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-    // TODO: 댓글 좋아요 추가
+
+    // 댓글 좋아요 추가
+    @PostMapping("/comments/{commentId}")
+    public ResponseEntity<Void> addCommentLike(@PathVariable Long commentId,
+                                             @SessionAttribute(name = "loginUser") SessionUser sessionUser) {
+        likeService.addCommentLike(commentId, sessionUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
     // TODO: 댓글 좋아요 취소
     // TODO: 댓글 좋아요 개수
 }
