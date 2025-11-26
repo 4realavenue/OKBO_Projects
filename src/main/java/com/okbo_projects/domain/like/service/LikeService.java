@@ -8,6 +8,7 @@ import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.board.repository.BoardRepository;
 import com.okbo_projects.domain.comment.repository.CommentRepository;
 import com.okbo_projects.domain.like.model.response.BoardLikesCountResponse;
+import com.okbo_projects.domain.like.model.response.CommentLikesCountResponse;
 import com.okbo_projects.domain.like.repository.LikeRepository;
 import com.okbo_projects.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,7 @@ public class LikeService {
     // 게시글 별 좋아요 개수
     public BoardLikesCountResponse countBoardLikes(Long boardId) {
         Board board = boardRepository.findBoardById(boardId);
-        long count = likeRepository.countByBoard(board);
+        Long count = likeRepository.countByBoard(board);
 
         return new BoardLikesCountResponse(count);
     }
@@ -101,5 +102,12 @@ public class LikeService {
         }
 
         likeRepository.deleteByCommentAndUser(comment, user);
+    }
+
+    public CommentLikesCountResponse countCommentLikes(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Long count = likeRepository.countByComment(comment);
+
+        return new CommentLikesCountResponse(count);
     }
 }
