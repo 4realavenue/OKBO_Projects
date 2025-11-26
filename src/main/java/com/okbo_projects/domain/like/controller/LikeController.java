@@ -28,6 +28,7 @@ public class LikeController {
     public ResponseEntity<Void> deleteBoardLike(@PathVariable Long boardId,
                                                 @SessionAttribute(name = "loginUser") SessionUser sessionUser) {
         likeService.deleteBoardLike(boardId, sessionUser);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -47,6 +48,16 @@ public class LikeController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-    // TODO: 댓글 좋아요 취소
-    // TODO: 댓글 좋아요 개수
+
+    // 댓글 좋아요 취소
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Void> deleteCommentLike(@PathVariable Long commentId,
+                                                @SessionAttribute(name = "loginUser") SessionUser sessionUser) {
+        likeService.deleteCommentLike(commentId, sessionUser);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // 댓글 좋아요 개수
+
 }

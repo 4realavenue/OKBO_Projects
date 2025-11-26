@@ -87,4 +87,19 @@ public class LikeService {
 
         likeRepository.save(like);
     }
+
+    // 댓글 좋아요 삭제
+    public void deleteCommentLike(Long commentId, SessionUser sessionUser) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        User user = userRepository.findUserById(sessionUser.getUserId());
+
+        boolean checkLikeExistence = likeRepository.existsByCommentAndUser(comment, user);
+        // 예외 처리 추후 수정 예정
+        // 좋아요 안했는데 취소하는 경우
+        if (!checkLikeExistence) {
+            throw new RuntimeException("좋아요를 누르지 않은 댓글입니다.");
+        }
+
+        likeRepository.deleteByCommentAndUser(comment, user);
+    }
 }
