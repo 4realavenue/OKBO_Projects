@@ -22,7 +22,7 @@ import java.util.Map;
 
 import static com.okbo_projects.common.exception.ErrorMessage.UNAUTHORIZED_LOGIN_REQUIRED;
 
-@Slf4j
+@Slf4j(topic = "Filter")
 @Component
 @RequiredArgsConstructor
 public class LoginCheckFilter extends OncePerRequestFilter {
@@ -48,7 +48,8 @@ public class LoginCheckFilter extends OncePerRequestFilter {
             HttpSession session = request.getSession(false);
             if (session == null || session.getAttribute("loginUser") == null) {
                 handleCustomException(response, new CustomException(UNAUTHORIZED_LOGIN_REQUIRED));
-                log.error(requestURI + " : 비로그인 접근 시도");
+                // TODO : Enum 값 불러오기
+                log.error("CustomException 발생 : 로그인이 필요한 서비스 입니다.");
                 return;
             }
         }
