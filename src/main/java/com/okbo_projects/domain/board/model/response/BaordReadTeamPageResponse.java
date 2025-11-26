@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,12 +14,18 @@ public class BaordReadTeamPageResponse {
     private Long id;
     private String title;
     private String writer;
+     private Long likes;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public static BaordReadTeamPageResponse from(BoardDto boardDto) {
         return new BaordReadTeamPageResponse(
                 boardDto.getId(),
                 boardDto.getTitle(),
-                boardDto.getWriter()
+                boardDto.getWriter(),
+                5L, //TODO : likes 구현 후, 게시글별 좋아요 수 가져오도록 수정
+                boardDto.getCreatedAt(),
+                boardDto.getModifiedAt()
         );
     }
 }

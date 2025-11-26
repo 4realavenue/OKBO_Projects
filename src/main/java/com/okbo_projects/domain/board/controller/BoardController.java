@@ -8,6 +8,9 @@ import com.okbo_projects.domain.board.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,31 +56,28 @@ public class BoardController {
     @GetMapping("/myBoard")
     public ResponseEntity<Page<ViewListOfMyArticlesWrittenResponse>> viewListOfMyArticlesWritten(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ){
-        Page<ViewListOfMyArticlesWrittenResponse> result = boardService.viewListOfMyArticlesWritten(sessionUser,page, size);
+        Page<ViewListOfMyArticlesWrittenResponse> result = boardService.viewListOfMyArticlesWritten(sessionUser, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     // 게시글 전체 조회
     @GetMapping
     public ResponseEntity<Page<BoardReadAllPageResponse>> getBoardAllPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<BoardReadAllPageResponse> result = boardService.getBoardAllPage(page, size);
+        Page<BoardReadAllPageResponse> result = boardService.getBoardAllPage(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     // 게시글 구단별 전체 조회
     @GetMapping("/teams/{teamName}")
     public ResponseEntity<Page<BaordReadTeamPageResponse>> getBoardTeamAllPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable String teamName
     ) {
-        Page<BaordReadTeamPageResponse> result = boardService.getBoardTeamAllPage(page, size, teamName);
+        Page<BaordReadTeamPageResponse> result = boardService.getBoardTeamAllPage(pageable, teamName);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -85,10 +85,9 @@ public class BoardController {
     @GetMapping("/followings")
     public ResponseEntity<Page<BoardReadFollowPageResponse>> getBoardFollowAllPage(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<BoardReadFollowPageResponse> result = boardService.getBoardFollowAllPage(page, size, sessionUser);
+        Page<BoardReadFollowPageResponse> result = boardService.getBoardFollowAllPage(sessionUser, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
