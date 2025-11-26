@@ -1,10 +1,13 @@
 package com.okbo_projects.domain.comment.controller;
 
 import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.domain.comment.model.request.CommentCreateRequest;
+import com.okbo_projects.domain.comment.model.response.CommentCreateResponse;
+import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.comment.model.request.CommentUpdateRequest;
 import com.okbo_projects.domain.comment.model.response.CommentUpdateResponse;
-import com.okbo_projects.domain.comment.repository.CommentRepository;
 import com.okbo_projects.domain.comment.service.CommentService;
+import jakarta.validation.Valid;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,13 +21,24 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    // 댓글 생성
+    @PostMapping("/boards/{boardId}")
+    public ResponseEntity<CommentCreateResponse> createComment(
+            @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
+            @Valid @RequestBody CommentCreateRequest request,
+            @PathVariable Long boardId
+    ){
+        CommentCreateResponse result = commentService.createComment(boardId, sessionUser, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
     //댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentUpdateResponse> updateComment(
             @SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser,
             @PathVariable Long commentId,
             @Valid @RequestBody CommentUpdateRequest request
-            ){
+    ){
         CommentUpdateResponse result = commentService.updateComment(sessionUser,commentId,request);
         return ResponseEntity.status(HttpStatus.OK).body(result);
 
