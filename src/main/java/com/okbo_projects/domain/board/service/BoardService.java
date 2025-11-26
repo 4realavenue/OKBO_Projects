@@ -16,9 +16,7 @@ import com.okbo_projects.domain.like.repository.LikeRepository;
 import com.okbo_projects.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,11 +58,11 @@ public class BoardService {
     }
 
     //게시글 상세조회
-    // TODO : 좋아요 수, 해당 게시글의 댓글 반환 추가
     @Transactional(readOnly = true)
-    public BoardDto detailedInquiryBoard(Long boardId) {
+    public BoardDetailedInquiryResponse detailedInquiryBoard(Long boardId) {
         Board board = findByBoardId(boardId);
-        return BoardDto.from(board);
+        // TODO : 댓글 추가(댓글 CRUD 구현 이후, 댓글 CRUD 중 게시글별 댓글 조회 API 참고)
+        return BoardDetailedInquiryResponse.from(BoardDto.from(board), likeRepository.countByBoard(board));
     }
 
     //내가 작성한 게시글 목록 조회
