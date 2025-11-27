@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentCreateResponse {
+
     private long commentId;
     private long boardId;
     private String comments;

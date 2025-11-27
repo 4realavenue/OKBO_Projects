@@ -3,12 +3,10 @@ package com.okbo_projects.domain.comment.controller;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.comment.model.request.CommentCreateRequest;
 import com.okbo_projects.domain.comment.model.response.CommentCreateResponse;
-import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.comment.model.request.CommentUpdateRequest;
 import com.okbo_projects.domain.comment.model.response.CommentGetAllResponse;
 import com.okbo_projects.domain.comment.model.response.CommentUpdateResponse;
 import com.okbo_projects.domain.comment.service.CommentService;
-import jakarta.validation.Valid;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -70,5 +68,4 @@ public class CommentController {
         commentService.deleteComment(sessionUser,commentId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 }

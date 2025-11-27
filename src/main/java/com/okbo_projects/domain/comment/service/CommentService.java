@@ -30,6 +30,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
+
     // 댓글 생성
     public CommentCreateResponse createComment(Long boardId, SessionUser sessionUser, CommentCreateRequest request) {
         Board board = findByBoardId(boardId);
@@ -71,6 +72,7 @@ public class CommentService {
         board.minusComments();
     }
 
+    // 댓글 확인
     private Comment findByCommentId(Long commentId) {
         return commentRepository.findCommentById(commentId);
     }

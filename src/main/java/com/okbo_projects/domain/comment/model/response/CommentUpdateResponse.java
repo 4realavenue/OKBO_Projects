@@ -1,6 +1,5 @@
 package com.okbo_projects.domain.comment.model.response;
 
-import com.okbo_projects.common.entity.Comment;
 import com.okbo_projects.domain.comment.model.dto.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
