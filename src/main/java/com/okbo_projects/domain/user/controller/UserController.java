@@ -7,7 +7,6 @@ import com.okbo_projects.domain.user.model.response.UserGetMyProfileResponse;
 import com.okbo_projects.domain.user.model.response.UserGetOtherProfileResponse;
 import com.okbo_projects.domain.user.model.response.UserNicknameUpdateResponse;
 import com.okbo_projects.domain.user.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,24 +55,27 @@ public class UserController {
 
     // 닉네임 변경
     @PutMapping("/nickname")
-    public ResponseEntity<UserNicknameUpdateResponse> updateNickname(@Valid @RequestBody UserNicknameUpdateRequest request,
-                                                                     @RequestAttribute(name = "loginUser") SessionUser sessionUser) {
+    public ResponseEntity<UserNicknameUpdateResponse> updateNickname(
+            @Valid @RequestBody UserNicknameUpdateRequest request,
+            @RequestAttribute(name = "loginUser") SessionUser sessionUser) {
         UserNicknameUpdateResponse response = userService.updateNickname(request, sessionUser);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 비밀번호 변경
     @PutMapping("/password")
-    public ResponseEntity<Void> updatePassword(@Valid @RequestBody UserPasswordUpdateRequest request,
-                                               @RequestAttribute(name = "loginUser") SessionUser sessionUser) {
+    public ResponseEntity<Void> updatePassword(
+            @Valid @RequestBody UserPasswordUpdateRequest request,
+            @RequestAttribute(name = "loginUser") SessionUser sessionUser) {
         userService.updatePassword(request, sessionUser);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     // 유저 삭제 (회원 탈퇴)
     @DeleteMapping
-    public ResponseEntity<Void> delete(@Valid @RequestBody UserDeleteRequest request,
-                                       @RequestAttribute(name = "loginUser") SessionUser sessionUser) {
+    public ResponseEntity<Void> delete(
+            @Valid @RequestBody UserDeleteRequest request,
+            @RequestAttribute(name = "loginUser") SessionUser sessionUser) {
         userService.delete(request, sessionUser);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
