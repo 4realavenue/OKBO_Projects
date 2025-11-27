@@ -6,12 +6,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SessionUser {
+public class LoginUser {
 
     private final Long userId;
 
-    public static SessionUser from(UserDto userDto) {
-        return new SessionUser(
+    public static LoginUser from(UserDto userDto) {
+        return new LoginUser(
                 userDto.getId()
         );
     }

@@ -1,6 +1,6 @@
 package com.okbo_projects.domain.board.controller;
 
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.domain.board.model.request.BoardCreateRequest;
 import com.okbo_projects.domain.board.model.request.BoardUpdateRequest;
 import com.okbo_projects.domain.board.model.response.*;
@@ -25,46 +25,51 @@ public class BoardController {
     //게시글 생성
     @PostMapping
     public ResponseEntity<BoardCreateResponse> createBoard(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @Valid @RequestBody BoardCreateRequest request
     ) {
-        BoardCreateResponse result = boardService.createBoard(sessionUser, request);
+        BoardCreateResponse result = boardService.createBoard(loginUser, request);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     //게시글 수정
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardUpdateResponse> updateBoard(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
-            @PathVariable Long boardId,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
+            @PathVariable long boardId,
             @Valid @RequestBody BoardUpdateRequest request
     ) {
-        BoardUpdateResponse result = boardService.updateBoard(sessionUser, boardId, request);
+        BoardUpdateResponse result = boardService.updateBoard(loginUser, boardId, request);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     //게시글 상세조회
     @GetMapping("/board/{boardId}")
     public ResponseEntity<BoardDetailedInquiryResponse> detailedInquiryBoard(
-            @PathVariable Long boardId,
+            @PathVariable long boardId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
         BoardDetailedInquiryResponse result = boardService.detailedInquiryBoard(boardId, pageable);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     //내가 작성한 게시글 목록 조회
-    @GetMapping("/myBoard")
+    @GetMapping("/my-board")
     public ResponseEntity<Page<BoardGetMyArticlesResponse>> viewListOfMyArticlesWritten(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<BoardGetMyArticlesResponse> result = boardService.viewListOfMyArticlesWritten(sessionUser, title, startDate, endDate, pageable);
+        Page<BoardGetMyArticlesResponse> result = boardService.viewListOfMyArticlesWritten(loginUser, title, startDate, endDate, pageable);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -78,6 +83,7 @@ public class BoardController {
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<BoardGetAllPageResponse> result = boardService.getBoardAllPage(title, writer, startDate, endDate, pageable);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -92,30 +98,33 @@ public class BoardController {
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Page<BoardGetTeamPageResponse> result = boardService.getBoardTeamAllPage(teamName, title, writer, startDate, endDate, pageable);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     // 팔로워 게시글 조회
     @GetMapping("/followings")
     public ResponseEntity<Page<BoardGetFollowPageResponse>> getBoardFollowAllPage(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String writer,
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate,
             @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<BoardGetFollowPageResponse> result = boardService.getBoardFollowAllPage(sessionUser, title, writer, startDate, endDate, pageable);
+        Page<BoardGetFollowPageResponse> result = boardService.getBoardFollowAllPage(loginUser, title, writer, startDate, endDate, pageable);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     // 게시글 삭제
     @DeleteMapping("/{boardId}")
     public ResponseEntity<Void> deleteBoard(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
-            @PathVariable Long boardId
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
+            @PathVariable long boardId
     ) {
-        boardService.deleteBoard(sessionUser, boardId);
+        boardService.deleteBoard(loginUser, boardId);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

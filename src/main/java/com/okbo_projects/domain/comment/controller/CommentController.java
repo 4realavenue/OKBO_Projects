@@ -1,9 +1,9 @@
 package com.okbo_projects.domain.comment.controller;
 
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.domain.comment.model.request.CommentCreateRequest;
-import com.okbo_projects.domain.comment.model.response.CommentCreateResponse;
 import com.okbo_projects.domain.comment.model.request.CommentUpdateRequest;
+import com.okbo_projects.domain.comment.model.response.CommentCreateResponse;
 import com.okbo_projects.domain.comment.model.response.CommentGetAllResponse;
 import com.okbo_projects.domain.comment.model.response.CommentUpdateResponse;
 import com.okbo_projects.domain.comment.service.CommentService;
@@ -27,45 +27,49 @@ public class CommentController {
     // 댓글 생성
     @PostMapping("/boards/{boardId}")
     public ResponseEntity<CommentCreateResponse> createComment(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @Valid @RequestBody CommentCreateRequest request,
-            @PathVariable Long boardId
+            @PathVariable long boardId
     ){
-        CommentCreateResponse result = commentService.createComment(boardId, sessionUser, request);
+        CommentCreateResponse result = commentService.createComment(boardId, loginUser, request);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     // 댓글 전체 조회
     @GetMapping("/boards/{boardId}")
     public ResponseEntity<Slice<CommentGetAllResponse>> getAllComment(
-            @PathVariable Long boardId,
+            @PathVariable long boardId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
         Slice<CommentGetAllResponse> result = commentService.getAllComment(boardId, pageable);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     //댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentUpdateResponse> updateComment(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
-            @PathVariable Long commentId,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
+            @PathVariable long commentId,
             @Valid @RequestBody CommentUpdateRequest request
     ){
-        CommentUpdateResponse result = commentService.updateComment(sessionUser,commentId,request);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        CommentUpdateResponse result = commentService.updateComment(loginUser,commentId,request);
 
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     //댓글 삭제
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
-            @PathVariable Long commentId
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
+            @PathVariable long commentId
     ){
-        commentService.deleteComment(sessionUser,commentId);
+        commentService.deleteComment(loginUser,commentId);
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -1,6 +1,6 @@
 package com.okbo_projects.common.entity;
 
-import com.okbo_projects.common.utils.Team;
+import com.okbo_projects.common.model.Team;
 import com.okbo_projects.domain.board.model.request.BoardUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "boards")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,5 +59,4 @@ public class Board extends BaseEntity {
     public void minusLikes() {
         this.likes--;
     }
-
 }

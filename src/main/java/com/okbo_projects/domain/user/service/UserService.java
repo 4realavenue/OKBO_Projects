@@ -2,10 +2,10 @@ package com.okbo_projects.domain.user.service;
 
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
+import com.okbo_projects.common.model.Team;
 import com.okbo_projects.common.utils.JwtUtils;
 import com.okbo_projects.common.utils.PasswordEncoder;
-import com.okbo_projects.common.utils.Team;
 import com.okbo_projects.domain.follow.repository.FollowRepository;
 import com.okbo_projects.domain.user.model.dto.UserDto;
 import com.okbo_projects.domain.user.model.request.*;
@@ -31,7 +31,7 @@ public class UserService {
     private final JwtUtils jwtUtils;
 
     // 회원가입
-    public UserCreateResponse create(UserCreateRequest request) {
+    public UserCreateResponse createUser(UserCreateRequest request) {
 
         if (userRepository.existsUserByNickname(request.getNickname())) {
             throw new CustomException(CONFLICT_USED_NICKNAME);
@@ -42,6 +42,7 @@ public class UserService {
         }
 
         String encodingPassword = passwordEncoder.encode(request.getPassword());
+
         Team team = Team.valueOf(request.getFavoriteTeam());
 
         User user = new User(
@@ -52,16 +53,19 @@ public class UserService {
         );
 
         userRepository.save(user);
+
         return UserCreateResponse.from(UserDto.from(user));
     }
 
     // 로그인
     public String login(LoginRequest request) {
+
         User user = userRepository.findUserByEmail(request.getEmail());
 
-        if (!user.isActivated()) {
+        if (user.isDeleted()) {
             throw new CustomException(NOT_FOUND_USER);
         }
+
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException(UNAUTHORIZED_WRONG_PASSWORD);
         }
@@ -71,18 +75,20 @@ public class UserService {
 
     // 내 프로필 조회
     @Transactional(readOnly = true)
-    public UserGetMyProfileResponse getMyProfile(SessionUser sessionUser) {
-        User user = userRepository.findUserById(sessionUser.getUserId());
+    public UserGetMyProfileResponse getMyProfile(LoginUser loginUser) {
+
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         return UserGetMyProfileResponse.from(UserDto.from(user));
     }
 
     // 다른 유저 프로필 조회
     @Transactional(readOnly = true)
-    public UserGetOtherProfileResponse getOtherProfile(String userNickname) {
+    public UserGetOtherProfileResponse getOtherUser(String userNickname) {
+
         User user = userRepository.findUserByNickname(userNickname);
 
-        if (!user.isActivated()) {
+        if (user.isDeleted()) {
             throw new CustomException(NOT_FOUND_USER);
         }
 
@@ -90,13 +96,13 @@ public class UserService {
     }
 
     // 유저 닉네임 변경(중복 불가)
-    public UserNicknameUpdateResponse updateNickname(UserNicknameUpdateRequest request, SessionUser sessionUser) {
+    public UserNicknameUpdateResponse updateUserNickname(UserNicknameUpdateRequest request, LoginUser loginUser) {
 
         if (userRepository.existsUserByNickname(request.getNickname())) {
             throw new CustomException(CONFLICT_USED_NICKNAME);
         }
 
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
         user.updateNickname(request.getNickname());
         userRepository.save(user);
 
@@ -104,8 +110,9 @@ public class UserService {
     }
 
     // 유저 비밀번호 변경(현재 비밀번호 검증 및 새 비밀번호는 현재 비밀번호와 일치 불가)
-    public void updatePassword(UserPasswordUpdateRequest request, SessionUser sessionUser) {
-        User user = userRepository.findUserById(sessionUser.getUserId());
+    public void updateUserPassword(UserPasswordUpdateRequest request, LoginUser loginUser) {
+
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         String currentPassword = request.getCurrentPassword();
         String newPassword = request.getNewPassword();
@@ -119,12 +126,15 @@ public class UserService {
         }
 
         String encodingPassword = passwordEncoder.encode(newPassword);
+
         user.updatePassword(encodingPassword);
+        userRepository.save(user);
     }
 
     // 유저 삭제(회원 탈퇴, 팔로워&팔로잉 목록 삭제)
-    public void delete(UserDeleteRequest request, SessionUser sessionUser) {
-        User user = userRepository.findUserById(sessionUser.getUserId());
+    public void deleteUser(UserDeleteRequest request, LoginUser loginUser) {
+
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException(UNAUTHORIZED_WRONG_PASSWORD);
@@ -133,7 +143,7 @@ public class UserService {
         followRepository.deleteAllByFromUser(user);
         followRepository.deleteAllByToUser(user);
 
-        user.deactivate();
+        user.updateIsDeleted();
         userRepository.save(user);
     }
 }

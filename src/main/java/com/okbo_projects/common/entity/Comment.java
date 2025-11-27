@@ -1,6 +1,5 @@
 package com.okbo_projects.common.entity;
 
-import com.okbo_projects.domain.comment.model.dto.CommentDto;
 import com.okbo_projects.domain.comment.model.request.CommentUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,12 +33,7 @@ public class Comment extends BaseEntity{
         this.board = board;
     }
 
-
     public void update(CommentUpdateRequest request) {
         this.comments = request.getComments();
-    }
-
-    public CommentDto toDto() {
-        return CommentDto.from(this);
     }
 }
