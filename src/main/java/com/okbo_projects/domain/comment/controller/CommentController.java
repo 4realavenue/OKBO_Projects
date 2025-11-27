@@ -70,4 +70,5 @@ public class CommentController {
         commentService.deleteComment(sessionUser,commentId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 }
