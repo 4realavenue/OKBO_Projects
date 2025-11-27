@@ -77,7 +77,7 @@ public class LikeService {
     // 댓글 좋아요 추가
     public void createCommentLike(Long commentId, LoginUser loginUser) {
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Comment comment = commentRepository.findCommentById(commentId);
         User user = userRepository.findUserById(loginUser.getUserId());
 
         boolean checkLikeExistence = likeRepository.existsByCommentAndUser(comment, user);
@@ -96,7 +96,7 @@ public class LikeService {
     // 댓글 좋아요 삭제
     public void deleteCommentLike(Long commentId, LoginUser loginUser) {
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Comment comment = commentRepository.findCommentById(commentId);
         User user = userRepository.findUserById(loginUser.getUserId());
 
         boolean checkLikeExistence = likeRepository.existsByCommentAndUser(comment, user);
@@ -110,7 +110,7 @@ public class LikeService {
     // 댓글 별 좋아요 개수
     public CommentLikesCountResponse countCommentLikes(Long commentId) {
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        Comment comment = commentRepository.findCommentById(commentId);
         Long count = likeRepository.countByComment(comment);
 
         return new CommentLikesCountResponse(count);
