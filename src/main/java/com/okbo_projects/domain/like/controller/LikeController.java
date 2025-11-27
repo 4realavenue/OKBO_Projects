@@ -1,6 +1,6 @@
 package com.okbo_projects.domain.like.controller;
 
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.domain.like.model.response.BoardLikesCountResponse;
 import com.okbo_projects.domain.like.model.response.CommentLikesCountResponse;
 import com.okbo_projects.domain.like.service.LikeService;
@@ -19,9 +19,9 @@ public class LikeController {
     @PostMapping("/boards/{boardId}")
     public ResponseEntity<Void> addBoardLike(
             @PathVariable Long boardId,
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        likeService.addBoardLike(boardId, sessionUser);
+        likeService.addBoardLike(boardId, loginUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -30,9 +30,9 @@ public class LikeController {
     @DeleteMapping("/boards/{boardId}")
     public ResponseEntity<Void> deleteBoardLike(
             @PathVariable Long boardId,
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        likeService.deleteBoardLike(boardId, sessionUser);
+        likeService.deleteBoardLike(boardId, loginUser);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -50,9 +50,9 @@ public class LikeController {
     @PostMapping("/comments/{commentId}")
     public ResponseEntity<Void> addCommentLike(
             @PathVariable Long commentId,
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        likeService.addCommentLike(commentId, sessionUser);
+        likeService.addCommentLike(commentId, loginUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -61,9 +61,9 @@ public class LikeController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteCommentLike(
             @PathVariable Long commentId,
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        likeService.deleteCommentLike(commentId, sessionUser);
+        likeService.deleteCommentLike(commentId, loginUser);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

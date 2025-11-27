@@ -4,7 +4,7 @@ import com.okbo_projects.common.entity.Board;
 import com.okbo_projects.common.entity.Comment;
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.domain.board.repository.BoardRepository;
 import com.okbo_projects.domain.comment.model.dto.CommentDto;
 import com.okbo_projects.domain.comment.model.request.CommentCreateRequest;
@@ -35,11 +35,11 @@ public class CommentService {
     private final LikeRepository likeRepository;
 
     // 댓글 생성
-    public CommentCreateResponse createComment(Long boardId, SessionUser sessionUser, CommentCreateRequest request) {
+    public CommentCreateResponse createComment(Long boardId, LoginUser loginUser, CommentCreateRequest request) {
 
         Board board = findByBoardId(boardId);
 
-        User user = findByUserId(sessionUser.getUserId());
+        User user = findByUserId(loginUser.getUserId());
 
         Comment comment = new Comment(
                 request.getComments(),
@@ -68,11 +68,11 @@ public class CommentService {
     }
 
     //댓글 수정
-    public CommentUpdateResponse updateComment(SessionUser sessionUser, Long commentId, CommentUpdateRequest request) {
+    public CommentUpdateResponse updateComment(LoginUser loginUser, Long commentId, CommentUpdateRequest request) {
 
         Comment comment = findByCommentId(commentId);
 
-        matchedWriter(sessionUser.getUserId(), comment.getWriter().getId());
+        matchedWriter(loginUser.getUserId(), comment.getWriter().getId());
 
         comment.update(request);
 
@@ -82,11 +82,11 @@ public class CommentService {
     }
 
     //댓글 삭제
-    public void deleteComment(SessionUser sessionUser, Long commentId) {
+    public void deleteComment(LoginUser loginUser, Long commentId) {
 
         Comment comment = findByCommentId(commentId);
 
-        matchedWriter(sessionUser.getUserId(), comment.getWriter().getId());
+        matchedWriter(loginUser.getUserId(), comment.getWriter().getId());
 
         likeRepository.deleteByComment(comment);
 

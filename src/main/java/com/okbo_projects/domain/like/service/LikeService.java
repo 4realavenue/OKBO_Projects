@@ -5,7 +5,7 @@ import com.okbo_projects.common.entity.Comment;
 import com.okbo_projects.common.entity.Like;
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.domain.board.repository.BoardRepository;
 import com.okbo_projects.domain.comment.repository.CommentRepository;
 import com.okbo_projects.domain.like.model.response.BoardLikesCountResponse;
@@ -29,10 +29,10 @@ public class LikeService {
     private final CommentRepository commentRepository;
 
     // 게시글 좋아요 추가
-    public void addBoardLike(Long boardId, SessionUser sessionUser) {
+    public void addBoardLike(Long boardId, LoginUser loginUser) {
 
         Board board = boardRepository.findBoardById(boardId);
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         boolean checkLikeExistence = likeRepository.existsByBoardAndUser(board, user);
         if (checkLikeExistence) {
@@ -50,10 +50,10 @@ public class LikeService {
     }
 
     // 게시글 좋아요 취소
-    public void deleteBoardLike(Long boardId, SessionUser sessionUser) {
+    public void deleteBoardLike(Long boardId, LoginUser loginUser) {
 
         Board board = boardRepository.findBoardById(boardId);
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         boolean checkLikeExistence = likeRepository.existsByBoardAndUser(board, user);
         if (!checkLikeExistence) {
@@ -75,10 +75,10 @@ public class LikeService {
     }
 
     // 댓글 좋아요 추가
-    public void addCommentLike(Long commentId, SessionUser sessionUser) {
+    public void addCommentLike(Long commentId, LoginUser loginUser) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow();
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         boolean checkLikeExistence = likeRepository.existsByCommentAndUser(comment, user);
         if (checkLikeExistence) {
@@ -94,10 +94,10 @@ public class LikeService {
     }
 
     // 댓글 좋아요 삭제
-    public void deleteCommentLike(Long commentId, SessionUser sessionUser) {
+    public void deleteCommentLike(Long commentId, LoginUser loginUser) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow();
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         boolean checkLikeExistence = likeRepository.existsByCommentAndUser(comment, user);
         if (!checkLikeExistence) {

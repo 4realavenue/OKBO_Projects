@@ -2,7 +2,7 @@ package com.okbo_projects.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.okbo_projects.common.exception.CustomException;
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.common.model.response.ErrorResponse;
 import com.okbo_projects.common.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
@@ -71,7 +71,7 @@ public class LoginCheckFilter extends OncePerRequestFilter {
             return;
         }
 
-        request.setAttribute("loginUser", new SessionUser(jwtUtils.getUserId(jwt)));
+        request.setAttribute("loginUser", new LoginUser(jwtUtils.getUserId(jwt)));
 
         filterChain.doFilter(request, response);
     }

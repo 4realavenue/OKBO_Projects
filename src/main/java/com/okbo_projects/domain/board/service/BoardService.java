@@ -4,7 +4,7 @@ import com.okbo_projects.common.entity.Board;
 import com.okbo_projects.common.entity.Comment;
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.common.utils.Team;
 import com.okbo_projects.domain.board.model.dto.BoardDto;
 import com.okbo_projects.domain.board.model.request.BoardCreateRequest;
@@ -43,9 +43,9 @@ public class BoardService {
     private final LikeRepository likeRepository;
 
     //게시글 생성
-    public BoardCreateResponse createBoard(SessionUser sessionUser, BoardCreateRequest request) {
+    public BoardCreateResponse createBoard(LoginUser loginUser, BoardCreateRequest request) {
 
-        User user = findByUserId(sessionUser.getUserId());
+        User user = findByUserId(loginUser.getUserId());
         Team team = Team.valueOf((request.getTeam()));
 
         Board board = new Board(
@@ -63,11 +63,11 @@ public class BoardService {
     }
 
     //게시글 수정
-    public BoardUpdateResponse updateBoard(SessionUser sessionUser, Long boardId, BoardUpdateRequest request) {
+    public BoardUpdateResponse updateBoard(LoginUser loginUser, Long boardId, BoardUpdateRequest request) {
 
         Board board = findByBoardId(boardId);
 
-        matchedWriter(sessionUser.getUserId(), board.getWriter().getId());
+        matchedWriter(loginUser.getUserId(), board.getWriter().getId());
 
         board.update(request);
 
@@ -94,13 +94,13 @@ public class BoardService {
     //내가 작성한 게시글 목록 조회
     @Transactional(readOnly = true)
     public Page<BoardGetMyArticlesResponse> viewListOfMyArticlesWritten(
-            SessionUser sessionUser,
+            LoginUser loginUser,
             String title,
             String startDate,
             String endDate,
             Pageable pageable
     ) {
-        User user = findByUserId(sessionUser.getUserId());
+        User user = findByUserId(loginUser.getUserId());
 
         boolean searchCondition = mySearchCondition(title, startDate, endDate);
 
@@ -171,7 +171,7 @@ public class BoardService {
     // 팔로워 게시글 전체 조회
     @Transactional(readOnly = true)
     public Page<BoardGetFollowPageResponse> getBoardFollowAllPage(
-            SessionUser sessionUser,
+            LoginUser loginUser,
             String title,
             String writer,
             String startDate,
@@ -180,7 +180,7 @@ public class BoardService {
     ) {
         boolean searchCondition = searchCondition(title, writer, startDate, endDate);
 
-        User user = findByUserId(sessionUser.getUserId());
+        User user = findByUserId(loginUser.getUserId());
 
         findByFromUser(user);
 
@@ -239,11 +239,11 @@ public class BoardService {
     }
 
     // 게시글 삭제
-    public void deleteBoard(SessionUser sessionUser, Long boardId) {
+    public void deleteBoard(LoginUser loginUser, Long boardId) {
 
         Board board = findByBoardId(boardId);
 
-        matchedWriter(sessionUser.getUserId(), board.getWriter().getId());
+        matchedWriter(loginUser.getUserId(), board.getWriter().getId());
 
         likeRepository.deleteByBoard(board);
 

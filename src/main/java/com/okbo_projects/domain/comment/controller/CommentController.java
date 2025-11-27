@@ -1,6 +1,6 @@
 package com.okbo_projects.domain.comment.controller;
 
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.domain.comment.model.request.CommentCreateRequest;
 import com.okbo_projects.domain.comment.model.request.CommentUpdateRequest;
 import com.okbo_projects.domain.comment.model.response.CommentCreateResponse;
@@ -27,11 +27,11 @@ public class CommentController {
     // 댓글 생성
     @PostMapping("/boards/{boardId}")
     public ResponseEntity<CommentCreateResponse> createComment(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @Valid @RequestBody CommentCreateRequest request,
             @PathVariable Long boardId
     ){
-        CommentCreateResponse result = commentService.createComment(boardId, sessionUser, request);
+        CommentCreateResponse result = commentService.createComment(boardId, loginUser, request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
@@ -53,11 +53,11 @@ public class CommentController {
     //댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentUpdateResponse> updateComment(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @PathVariable Long commentId,
             @Valid @RequestBody CommentUpdateRequest request
     ){
-        CommentUpdateResponse result = commentService.updateComment(sessionUser,commentId,request);
+        CommentUpdateResponse result = commentService.updateComment(loginUser,commentId,request);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
@@ -65,10 +65,10 @@ public class CommentController {
     //댓글 삭제
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(
-            @RequestAttribute(name = "loginUser") SessionUser sessionUser,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @PathVariable Long commentId
     ){
-        commentService.deleteComment(sessionUser,commentId);
+        commentService.deleteComment(loginUser,commentId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

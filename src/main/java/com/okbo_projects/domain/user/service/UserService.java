@@ -2,7 +2,7 @@ package com.okbo_projects.domain.user.service;
 
 import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
-import com.okbo_projects.common.model.SessionUser;
+import com.okbo_projects.common.model.LoginUser;
 import com.okbo_projects.common.utils.JwtUtils;
 import com.okbo_projects.common.utils.PasswordEncoder;
 import com.okbo_projects.common.utils.Team;
@@ -75,9 +75,9 @@ public class UserService {
 
     // 내 프로필 조회
     @Transactional(readOnly = true)
-    public UserGetMyProfileResponse getMyProfile(SessionUser sessionUser) {
+    public UserGetMyProfileResponse getMyProfile(LoginUser loginUser) {
 
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         return UserGetMyProfileResponse.from(UserDto.from(user));
     }
@@ -96,13 +96,13 @@ public class UserService {
     }
 
     // 유저 닉네임 변경(중복 불가)
-    public UserNicknameUpdateResponse updateNickname(UserNicknameUpdateRequest request, SessionUser sessionUser) {
+    public UserNicknameUpdateResponse updateNickname(UserNicknameUpdateRequest request, LoginUser loginUser) {
 
         if (userRepository.existsUserByNickname(request.getNickname())) {
             throw new CustomException(CONFLICT_USED_NICKNAME);
         }
 
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
         user.updateNickname(request.getNickname());
         userRepository.save(user);
 
@@ -110,9 +110,9 @@ public class UserService {
     }
 
     // 유저 비밀번호 변경(현재 비밀번호 검증 및 새 비밀번호는 현재 비밀번호와 일치 불가)
-    public void updatePassword(UserPasswordUpdateRequest request, SessionUser sessionUser) {
+    public void updatePassword(UserPasswordUpdateRequest request, LoginUser loginUser) {
 
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         String currentPassword = request.getCurrentPassword();
         String newPassword = request.getNewPassword();
@@ -132,9 +132,9 @@ public class UserService {
     }
 
     // 유저 삭제(회원 탈퇴, 팔로워&팔로잉 목록 삭제)
-    public void delete(UserDeleteRequest request, SessionUser sessionUser) {
+    public void delete(UserDeleteRequest request, LoginUser loginUser) {
 
-        User user = userRepository.findUserById(sessionUser.getUserId());
+        User user = userRepository.findUserById(loginUser.getUserId());
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException(UNAUTHORIZED_WRONG_PASSWORD);
