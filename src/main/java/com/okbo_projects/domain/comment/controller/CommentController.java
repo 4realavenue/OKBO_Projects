@@ -29,7 +29,7 @@ public class CommentController {
     public ResponseEntity<CommentCreateResponse> createComment(
             @RequestAttribute(name = "loginUser") LoginUser loginUser,
             @Valid @RequestBody CommentCreateRequest request,
-            @PathVariable Long boardId
+            @PathVariable long boardId
     ){
         CommentCreateResponse result = commentService.createComment(boardId, loginUser, request);
 
@@ -39,7 +39,7 @@ public class CommentController {
     // 댓글 전체 조회
     @GetMapping("/boards/{boardId}")
     public ResponseEntity<Slice<CommentGetAllResponse>> getAllComment(
-            @PathVariable Long boardId,
+            @PathVariable long boardId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -54,7 +54,7 @@ public class CommentController {
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentUpdateResponse> updateComment(
             @RequestAttribute(name = "loginUser") LoginUser loginUser,
-            @PathVariable Long commentId,
+            @PathVariable long commentId,
             @Valid @RequestBody CommentUpdateRequest request
     ){
         CommentUpdateResponse result = commentService.updateComment(loginUser,commentId,request);
@@ -66,7 +66,7 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @RequestAttribute(name = "loginUser") LoginUser loginUser,
-            @PathVariable Long commentId
+            @PathVariable long commentId
     ){
         commentService.deleteComment(loginUser,commentId);
 

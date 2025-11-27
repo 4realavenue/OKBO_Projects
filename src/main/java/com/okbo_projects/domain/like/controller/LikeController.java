@@ -18,7 +18,7 @@ public class LikeController {
     // 게시글 좋아요 추가
     @PostMapping("/boards/{boardId}")
     public ResponseEntity<Void> addBoardLike(
-            @PathVariable Long boardId,
+            @PathVariable long boardId,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
         likeService.addBoardLike(boardId, loginUser);
@@ -29,7 +29,7 @@ public class LikeController {
     // 게시글 좋아요 취소
     @DeleteMapping("/boards/{boardId}")
     public ResponseEntity<Void> deleteBoardLike(
-            @PathVariable Long boardId,
+            @PathVariable long boardId,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
         likeService.deleteBoardLike(boardId, loginUser);
@@ -39,7 +39,7 @@ public class LikeController {
 
     // 게시글 좋아요 개수
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity<BoardLikesCountResponse> countBoardLikes(@PathVariable Long boardId) {
+    public ResponseEntity<BoardLikesCountResponse> countBoardLikes(@PathVariable long boardId) {
 
         BoardLikesCountResponse response = likeService.countBoardLikes(boardId);
 
@@ -49,7 +49,7 @@ public class LikeController {
     // 댓글 좋아요 추가
     @PostMapping("/comments/{commentId}")
     public ResponseEntity<Void> addCommentLike(
-            @PathVariable Long commentId,
+            @PathVariable long commentId,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
         likeService.addCommentLike(commentId, loginUser);
@@ -60,7 +60,7 @@ public class LikeController {
     // 댓글 좋아요 취소
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteCommentLike(
-            @PathVariable Long commentId,
+            @PathVariable long commentId,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
         likeService.deleteCommentLike(commentId, loginUser);
@@ -70,7 +70,7 @@ public class LikeController {
 
     // 댓글 좋아요 개수
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<CommentLikesCountResponse> countCommentLikes(@PathVariable Long commentId) {
+    public ResponseEntity<CommentLikesCountResponse> countCommentLikes(@PathVariable long commentId) {
 
         CommentLikesCountResponse response = likeService.countCommentLikes(commentId);
 
