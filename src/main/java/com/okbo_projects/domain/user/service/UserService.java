@@ -59,7 +59,7 @@ public class UserService {
     public String login(LoginRequest request) {
         User user = userRepository.findUserByEmail(request.getEmail());
 
-        if (!user.isActivated()) {
+        if (user.isDeleted()) {
             throw new CustomException(NOT_FOUND_USER);
         }
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -82,7 +82,7 @@ public class UserService {
     public UserGetOtherProfileResponse getOtherProfile(String userNickname) {
         User user = userRepository.findUserByNickname(userNickname);
 
-        if (!user.isActivated()) {
+        if (user.isDeleted()) {
             throw new CustomException(NOT_FOUND_USER);
         }
 
@@ -133,7 +133,7 @@ public class UserService {
         followRepository.deleteAllByFromUser(user);
         followRepository.deleteAllByToUser(user);
 
-        user.deactivate();
+        user.updateIsDeleted();
         userRepository.save(user);
     }
 }

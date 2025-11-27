@@ -5,7 +5,9 @@ import com.okbo_projects.common.entity.User;
 import com.okbo_projects.common.exception.CustomException;
 import com.okbo_projects.common.model.SessionUser;
 import com.okbo_projects.domain.follow.model.dto.FollowDto;
-import com.okbo_projects.domain.follow.model.response.*;
+import com.okbo_projects.domain.follow.model.response.FollowCountResponse;
+import com.okbo_projects.domain.follow.model.response.FollowGetFollowerListResponse;
+import com.okbo_projects.domain.follow.model.response.FollowGetFollowingListResponse;
 import com.okbo_projects.domain.follow.repository.FollowRepository;
 import com.okbo_projects.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class FollowService {
         if (fromUser.equals(toUser)) { throw new CustomException(BAD_REQUEST_NOT_ALLOWED_SELF_FOLLOW); }
         boolean checkFollowExistence = followRepository.existsByFromUserAndToUser(fromUser, toUser);
         if (checkFollowExistence) { throw new CustomException(CONFLICT_ALREADY_FOLLOWING); }
-        if (!toUser.isActivated()) { throw new CustomException(NOT_FOUND_USER); }
+        if (toUser.isDeleted()) { throw new CustomException(NOT_FOUND_USER); }
 
         Follow follow = new Follow(fromUser, toUser);
         followRepository.save(follow);
