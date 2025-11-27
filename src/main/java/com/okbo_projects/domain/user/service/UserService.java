@@ -31,7 +31,7 @@ public class UserService {
     private final JwtUtils jwtUtils;
 
     // 회원가입
-    public UserCreateResponse create(UserCreateRequest request) {
+    public UserCreateResponse createUser(UserCreateRequest request) {
 
         if (userRepository.existsUserByNickname(request.getNickname())) {
             throw new CustomException(CONFLICT_USED_NICKNAME);
@@ -84,7 +84,7 @@ public class UserService {
 
     // 다른 유저 프로필 조회
     @Transactional(readOnly = true)
-    public UserGetOtherProfileResponse getOtherProfile(String userNickname) {
+    public UserGetOtherProfileResponse getOtherUser(String userNickname) {
 
         User user = userRepository.findUserByNickname(userNickname);
 
@@ -96,7 +96,7 @@ public class UserService {
     }
 
     // 유저 닉네임 변경(중복 불가)
-    public UserNicknameUpdateResponse updateNickname(UserNicknameUpdateRequest request, LoginUser loginUser) {
+    public UserNicknameUpdateResponse updateUserNickname(UserNicknameUpdateRequest request, LoginUser loginUser) {
 
         if (userRepository.existsUserByNickname(request.getNickname())) {
             throw new CustomException(CONFLICT_USED_NICKNAME);
@@ -110,7 +110,7 @@ public class UserService {
     }
 
     // 유저 비밀번호 변경(현재 비밀번호 검증 및 새 비밀번호는 현재 비밀번호와 일치 불가)
-    public void updatePassword(UserPasswordUpdateRequest request, LoginUser loginUser) {
+    public void updateUserPassword(UserPasswordUpdateRequest request, LoginUser loginUser) {
 
         User user = userRepository.findUserById(loginUser.getUserId());
 
@@ -132,7 +132,7 @@ public class UserService {
     }
 
     // 유저 삭제(회원 탈퇴, 팔로워&팔로잉 목록 삭제)
-    public void delete(UserDeleteRequest request, LoginUser loginUser) {
+    public void deleteUser(UserDeleteRequest request, LoginUser loginUser) {
 
         User user = userRepository.findUserById(loginUser.getUserId());
 

@@ -29,7 +29,7 @@ public class LikeService {
     private final CommentRepository commentRepository;
 
     // 게시글 좋아요 추가
-    public void addBoardLike(Long boardId, LoginUser loginUser) {
+    public void createBoardLike(Long boardId, LoginUser loginUser) {
 
         Board board = boardRepository.findBoardById(boardId);
         User user = userRepository.findUserById(loginUser.getUserId());
@@ -75,7 +75,7 @@ public class LikeService {
     }
 
     // 댓글 좋아요 추가
-    public void addCommentLike(Long commentId, LoginUser loginUser) {
+    public void createCommentLike(Long commentId, LoginUser loginUser) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow();
         User user = userRepository.findUserById(loginUser.getUserId());

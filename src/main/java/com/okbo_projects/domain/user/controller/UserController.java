@@ -21,9 +21,9 @@ public class UserController {
 
     // 유저 생성 (회원가입)
     @PostMapping
-    public ResponseEntity<UserCreateResponse> create(@Valid @RequestBody UserCreateRequest request) {
+    public ResponseEntity<UserCreateResponse> createUser(@Valid @RequestBody UserCreateRequest request) {
 
-        UserCreateResponse response = userService.create(request);
+        UserCreateResponse response = userService.createUser(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -54,42 +54,42 @@ public class UserController {
 
     // 다른 유저 조회
     @GetMapping("/{nickname}")
-    public ResponseEntity<UserGetOtherProfileResponse> getOtherProfile(@PathVariable String nickname) {
+    public ResponseEntity<UserGetOtherProfileResponse> getOtherUser(@PathVariable String nickname) {
 
-        UserGetOtherProfileResponse response = userService.getOtherProfile(nickname);
+        UserGetOtherProfileResponse response = userService.getOtherUser(nickname);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 닉네임 변경
     @PutMapping("/nickname")
-    public ResponseEntity<UserNicknameUpdateResponse> updateNickname(
+    public ResponseEntity<UserNicknameUpdateResponse> updateUserNickname(
             @Valid @RequestBody UserNicknameUpdateRequest request,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        UserNicknameUpdateResponse response = userService.updateNickname(request, loginUser);
+        UserNicknameUpdateResponse response = userService.updateUserNickname(request, loginUser);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 비밀번호 변경
     @PutMapping("/password")
-    public ResponseEntity<Void> updatePassword(
+    public ResponseEntity<Void> updateUserPassword(
             @Valid @RequestBody UserPasswordUpdateRequest request,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        userService.updatePassword(request, loginUser);
+        userService.updateUserPassword(request, loginUser);
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     // 유저 삭제 (회원 탈퇴)
     @DeleteMapping
-    public ResponseEntity<Void> delete(
+    public ResponseEntity<Void> deleteUser(
             @Valid @RequestBody UserDeleteRequest request,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        userService.delete(request, loginUser);
+        userService.deleteUser(request, loginUser);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

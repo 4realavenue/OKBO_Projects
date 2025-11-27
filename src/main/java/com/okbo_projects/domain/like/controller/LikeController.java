@@ -17,11 +17,11 @@ public class LikeController {
 
     // 게시글 좋아요 추가
     @PostMapping("/boards/{boardId}")
-    public ResponseEntity<Void> addBoardLike(
+    public ResponseEntity<Void> createBoardLike(
             @PathVariable long boardId,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        likeService.addBoardLike(boardId, loginUser);
+        likeService.createBoardLike(boardId, loginUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -48,11 +48,11 @@ public class LikeController {
 
     // 댓글 좋아요 추가
     @PostMapping("/comments/{commentId}")
-    public ResponseEntity<Void> addCommentLike(
+    public ResponseEntity<Void> createCommentLike(
             @PathVariable long commentId,
             @RequestAttribute(name = "loginUser") LoginUser loginUser
     ) {
-        likeService.addCommentLike(commentId, loginUser);
+        likeService.createCommentLike(commentId, loginUser);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
