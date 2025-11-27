@@ -48,7 +48,6 @@ public class FollowService {
         }
 
         Follow follow = new Follow(fromUser, toUser);
-
         followRepository.save(follow);
     }
 
@@ -59,7 +58,6 @@ public class FollowService {
         User toUser = userRepository.findUserByNickname(userNickname);
 
         Follow follow = followRepository.findFollowByFromUserAndToUser(fromUser, toUser);
-
         followRepository.delete(follow);
     }
 
