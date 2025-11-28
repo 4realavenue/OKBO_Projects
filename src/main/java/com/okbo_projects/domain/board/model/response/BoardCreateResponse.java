@@ -11,11 +11,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardCreateResponse {
+
     private Long id;
     private String title;
     private String content;
     private String team;
     private String writer;
+    private Long comments;
+    private Long likes;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -26,6 +29,8 @@ public class BoardCreateResponse {
                 dto.getContent(),
                 dto.getTeam().getTeamName(),
                 dto.getWriter(),
+                dto.getComments(),
+                dto.getLikes(),
                 dto.getCreatedAt(),
                 dto.getModifiedAt()
         );

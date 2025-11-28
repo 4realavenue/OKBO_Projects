@@ -1,0 +1,79 @@
+package com.okbo_projects.domain.like.controller;
+
+import com.okbo_projects.common.model.LoginUser;
+import com.okbo_projects.domain.like.model.response.BoardLikesCountResponse;
+import com.okbo_projects.domain.like.model.response.CommentLikesCountResponse;
+import com.okbo_projects.domain.like.service.LikeService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/likes")
+@RequiredArgsConstructor
+public class LikeController {
+    private final LikeService likeService;
+
+    // 게시글 좋아요 추가
+    @PostMapping("/boards/{boardId}")
+    public ResponseEntity<Void> createBoardLike(
+            @PathVariable long boardId,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
+    ) {
+        likeService.createBoardLike(boardId, loginUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 게시글 좋아요 취소
+    @DeleteMapping("/boards/{boardId}")
+    public ResponseEntity<Void> deleteBoardLike(
+            @PathVariable long boardId,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
+    ) {
+        likeService.deleteBoardLike(boardId, loginUser);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // 게시글 좋아요 개수
+    @GetMapping("/boards/{boardId}")
+    public ResponseEntity<BoardLikesCountResponse> countBoardLikes(@PathVariable long boardId) {
+
+        BoardLikesCountResponse response = likeService.countBoardLikes(boardId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 댓글 좋아요 추가
+    @PostMapping("/comments/{commentId}")
+    public ResponseEntity<Void> createCommentLike(
+            @PathVariable long commentId,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
+    ) {
+        likeService.createCommentLike(commentId, loginUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 댓글 좋아요 취소
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Void> deleteCommentLike(
+            @PathVariable long commentId,
+            @RequestAttribute(name = "loginUser") LoginUser loginUser
+    ) {
+        likeService.deleteCommentLike(commentId, loginUser);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // 댓글 좋아요 개수
+    @GetMapping("/comments/{commentId}")
+    public ResponseEntity<CommentLikesCountResponse> countCommentLikes(@PathVariable long commentId) {
+
+        CommentLikesCountResponse response = likeService.countCommentLikes(commentId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+}
